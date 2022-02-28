@@ -3,7 +3,7 @@ Q : queen
 R : rook
 B : bishop
 N : knight (or S)
-    : pawn
+  : pawn
 
 x : capture (or :)
 
@@ -16,6 +16,6 @@ ex : gxh6 : pawn from g column takes h6
 
 The player with the white pieces always moves first.
 
-ex : 1. e4 e6 —> white pawn moves to e4 and black pawn moves to e6
+ex : 1. e4 e6 —> first moves : white pawn moves to e4 and black pawn moves to e6
 
 
