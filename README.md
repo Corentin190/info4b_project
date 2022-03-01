@@ -2,14 +2,14 @@
 
 How to read a pgn file :
 
-K : king
-Q : queen
-R : rook
-B : bishop
-N : knight (or S)
-  : pawn
-
-x : capture (or :)
+K : king\n
+Q : queen\n
+R : rook\n
+B : bishop\n
+N : knight (or S)\n
+  : pawn\n
+  
+x : capture (or :)\n
 
 \# : end of the game (Checkmate : the king is in check and there is no possible escape : the opponent wins)
 
