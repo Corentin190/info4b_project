@@ -1,8 +1,9 @@
 import java.io.*;
+import java.util.*;
 import data.structures.*;
 
 public class DBReader{
-  public static void main(String arg[]){
+  public static void main(String[] args) {
     try(FileInputStream in = new FileInputStream("lichess_db_standard_rated_2013-01.pgn");){
       StreamTokenizer st = new StreamTokenizer(in);
       int token;
@@ -37,7 +38,28 @@ public class DBReader{
         System.out.println("=========== Game "+cpt+" - DONE ! ===========");
         System.out.println(tmp.blackPlayer+" > "+"lichess_db_standard_rated_2013-01.pgn"+" > "+startingByte);
         System.out.println(tmp.whitePlayer+" > "+"lichess_db_standard_rated_2013-01.pgn"+" > "+startingByte);
-      }while(cpt < 2);
+        if(new File("Players/"+tmp.blackPlayer+".dat").exists()){
+          Player blackPlayer = new Player("Players/"+tmp.blackPlayer+".dat");
+          blackPlayer.addGame("lichess_db_standard_rated_2013-01.pgn",startingByte);
+          blackPlayer.savePlayer("Players/"+tmp.blackPlayer+".dat");
+        }else{
+          Player blackPlayer = new Player();
+          blackPlayer.pseudo = tmp.blackPlayer;
+          blackPlayer.addGame("lichess_db_standard_rated_2013-01.pgn",startingByte);
+          blackPlayer.savePlayer("Players/"+tmp.blackPlayer+".dat");
+        }
+        if(new File("Players/"+tmp.whitePlayer+".dat").exists()){
+          Player whitePlayer = new Player("Players/"+tmp.whitePlayer+".dat");
+          whitePlayer.addGame("lichess_db_standard_rated_2013-01.pgn",startingByte);
+          whitePlayer.savePlayer("Players/"+tmp.whitePlayer+".dat");
+        }else{
+          Player whitePlayer = new Player();
+          whitePlayer.pseudo = tmp.whitePlayer;
+          whitePlayer.addGame("lichess_db_standard_rated_2013-01.pgn",startingByte);
+          whitePlayer.savePlayer("Players/"+tmp.whitePlayer+".dat");
+        }
+      }while(token != st.TT_EOF);
+      in.close();
       System.out.println("====== FIN FICHIER ======");
     }catch (IOException e){
       e.printStackTrace();
