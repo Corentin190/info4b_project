@@ -75,7 +75,6 @@ public class DBReader{
       }
       in.close();
       System.out.println(cpt+" parties traitées");
-      System.out.println("====== FIN FICHIER ======");
     }catch (IOException e){
       e.printStackTrace();
     }
