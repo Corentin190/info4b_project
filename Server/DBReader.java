@@ -42,27 +42,27 @@ public class DBReader{
         }while(blankLineCpt < 2);
         cpt++;
         System.out.println("=========== Game "+cpt+" - DONE ! ===========");
-        System.out.println(tmp.blackPlayer+" > "+"lichess_db_standard_rated_2013-01.pgn"+" > "+startingLine);
-        System.out.println(tmp.whitePlayer+" > "+"lichess_db_standard_rated_2013-01.pgn"+" > "+startingLine);
+        // System.out.println(tmp.blackPlayer+" > "+"lichess_db_standard_rated_2013-01.pgn"+" > "+startingLine);
+        // System.out.println(tmp.whitePlayer+" > "+"lichess_db_standard_rated_2013-01.pgn"+" > "+startingLine);
         if(new File("Players/"+tmp.blackPlayer+".dat").exists()){
-          //   Player blackPlayer = new Player("Players/"+tmp.blackPlayer+".dat");
-          //   blackPlayer.addGame("lichess_db_standard_rated_2013-01.pgn",startingByte);
-          //   blackPlayer.savePlayer("Players/"+tmp.blackPlayer+".dat");
+          Player blackPlayer = new Player("Players/"+tmp.blackPlayer+".dat");
+          blackPlayer.addGame("lichess_db_standard_rated_2013-01.pgn",(long)startingLine);
+          blackPlayer.savePlayer("Players/"+tmp.blackPlayer+".dat");
         }else{
           Player blackPlayer = new Player();
           blackPlayer.pseudo = tmp.blackPlayer;
           blackPlayer.addGame("lichess_db_standard_rated_2013-01.pgn",(long)startingLine);
-          //   blackPlayer.savePlayer("Players/"+tmp.blackPlayer+".dat");
+          blackPlayer.savePlayer("Players/"+tmp.blackPlayer+".dat");
         }
         if(new File("Players/"+tmp.whitePlayer+".dat").exists()){
-          //   Player whitePlayer = new Player("Players/"+tmp.whitePlayer+".dat");
-          //   whitePlayer.addGame("lichess_db_standard_rated_2013-01.pgn",startingByte);
-          //   whitePlayer.savePlayer("Players/"+tmp.whitePlayer+".dat");
+          Player whitePlayer = new Player("Players/"+tmp.whitePlayer+".dat");
+          whitePlayer.addGame("lichess_db_standard_rated_2013-01.pgn",(long)startingLine);
+          whitePlayer.savePlayer("Players/"+tmp.whitePlayer+".dat");
         }else{
           Player whitePlayer = new Player();
           whitePlayer.pseudo = tmp.whitePlayer;
           whitePlayer.addGame("lichess_db_standard_rated_2013-01.pgn",(long)startingLine);
-          //   whitePlayer.savePlayer("Players/"+tmp.whitePlayer+".dat");
+          whitePlayer.savePlayer("Players/"+tmp.whitePlayer+".dat");
         }
       }while(reader.ready());
       in.close();
