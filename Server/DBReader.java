@@ -57,7 +57,6 @@ public class DBReader{
           blackPlayer.addGame("Src/lichess_db_standard_rated_2013-01.pgn",(long)startingLine);
           playerNickname.add(blackPlayer.pseudo);
           players.add(blackPlayer);
-          //blackPlayer.savePlayer("Players/"+tmp.blackPlayer+".dat");
         }
         if(playerNickname.contains(tmp.whitePlayer)){
           Player whitePlayer = players.get(playerNickname.indexOf(tmp.whitePlayer));
@@ -68,12 +67,10 @@ public class DBReader{
           whitePlayer.addGame("Src/lichess_db_standard_rated_2013-01.pgn",(long)startingLine);
           playerNickname.add(whitePlayer.pseudo);
           players.add(whitePlayer);
-          //whitePlayer.savePlayer("Players/"+tmp.whitePlayer+".dat");
         }
       }while(reader.ready());
       System.out.println("Saving data");
       for(int i=0;i<players.size();i++){
-        //System.out.println(players.get(i).pseudo);
         players.get(i).savePlayer("Players/"+players.get(i).pseudo+".dat");
       }
       in.close();
