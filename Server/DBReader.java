@@ -43,7 +43,7 @@ public class DBReader{
           lineCpt++;
         }while(blankLineCpt < 2);
         cpt++;
-        System.out.println("=========== Game "+cpt+" - DONE ! ===========");
+        //System.out.println("=========== Game "+cpt+" - DONE ! ===========");
         // System.out.println(tmp.blackPlayer+" > "+"lichess_db_standard_rated_2013-01.pgn"+" > "+startingLine);
         // System.out.println(tmp.whitePlayer+" > "+"lichess_db_standard_rated_2013-01.pgn"+" > "+startingLine);
         if(playerNickname.contains(tmp.blackPlayer)){
@@ -70,11 +70,11 @@ public class DBReader{
         }
       }while(reader.ready());
       for(int i=0;i<players.size();i++){
-        System.out.println(players.get(i).pseudo);
+        //System.out.println(players.get(i).pseudo);
         players.get(i).savePlayer("Players/"+players.get(i).pseudo+".dat");
       }
       in.close();
-      System.out.println(cpt);
+      System.out.println(cpt+" parties traitées");
       System.out.println("====== FIN FICHIER ======");
     }catch (IOException e){
       e.printStackTrace();
