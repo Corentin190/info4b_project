@@ -3,3 +3,4 @@ Players/
 *.class
 *.pgn
 *.pgn.bz2
+.vscode/settings.json
