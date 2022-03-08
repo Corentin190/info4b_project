@@ -31,13 +31,36 @@ public class DBReader{
     }
   }
 
-  public static void displayOpeningIteration(Hashtable<String,Integer> hashtable) {
-    Set keys = hashtable.keySet();
+  public static void extractOpeningIteration(Hashtable<String,Integer> openingHashtable, Game game) {
+    if(openingHashtable.containsKey(game.opening)){
+      openingHashtable.put(game.opening,openingHashtable.get(game.opening)+1);
+    }else{
+      openingHashtable.put(game.opening,1);
+    }
+  }
+
+  public static void displayOpeningIteration(Hashtable<String,Integer> openingHashtable) {
+    openingHashtable.forEach((key, value) -> {
+            System.out.println("Opening: "+key+" & Iterations: "+value);
+        });
+  }
+
+  public static void displayTopOpening(Hashtable<String,Integer> openingHashtable, int top) {
+    //display top opening
+    Hashtable<String,Integer> localHashtable = openingHashtable;
+    ArrayList<String> listKeys = Collections.list(localHashtable.keys());
+    String topOpening=listKeys.get((int)Math.random()*listKeys.size());
+    Set keys = localHashtable.keySet();
     Iterator itr = keys.iterator();
-    String key="";
-    while (itr.hasNext()) {
-      key = (String) itr.next();
-      System.out.println("Opening: "+key+" & Occurence: "+hashtable.get(key));
+    for(int i=1;i<=top;i++) {
+      for(int j=0;j<listKeys.size();j++) {
+        if(localHashtable.get(listKeys.get(j))>localHashtable.get(topOpening)) {
+          topOpening=listKeys.get(j);
+        }
+      }
+      System.out.println("Top "+i+" opening :: "+topOpening+" with "+localHashtable.get(topOpening)+" iterations");
+      listKeys.remove(topOpening);
+      topOpening=listKeys.get((int)Math.random()*listKeys.size());
     }
   }
 
@@ -48,7 +71,7 @@ public class DBReader{
       String playersDataFile = "Src/lichess_db_standard_rated_2013-01_player_data.dat";
       FileInputStream in = new FileInputStream(dataFile);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-      Hashtable<String,Integer> topOpening = new Hashtable<String,Integer>();
+      Hashtable<String,Integer> openingHashtable = new Hashtable<String,Integer>();
       int cpt = 0;
       int lineCpt = 0;
       Hashtable<String,ArrayList<Integer>> playersHashtable = new Hashtable<String,ArrayList<Integer>>();
@@ -79,12 +102,6 @@ public class DBReader{
             }
             if(line.startsWith("[Opening")){
               tmp.opening = line.substring(10,line.length()-2);
-              //opening to Hashtable
-              if(topOpening.containsKey(tmp.opening)){
-                topOpening.put(tmp.opening,topOpening.get(tmp.opening)+1);
-              }else{
-                topOpening.put(tmp.opening,1);
-              }
             }
             if(line.equals("")){
               blankLineCpt++;
@@ -94,6 +111,7 @@ public class DBReader{
         }while(blankLineCpt < 2);
         cpt++;
         extractPlayerData(playersHashtable,tmp);
+        extractOpeningIteration(openingHashtable,tmp);
       }while(reader.ready());
       System.out.println("Saving data");
       File output = new File(playersDataFile);
@@ -108,7 +126,8 @@ public class DBReader{
         String key = en.nextElement();
       }
       System.out.println(cptPlayer+" Player saved");
-    //  displayOpeningIteration(topOpening);
+    //  displayOpeningIteration(openingHashtable);
+      displayTopOpening(openingHashtable,5);
     }catch (IOException e){
       e.printStackTrace();
     }
