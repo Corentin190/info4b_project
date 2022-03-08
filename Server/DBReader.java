@@ -10,6 +10,7 @@ public class DBReader{
       int lineCpt = 0;
       ArrayList<String> playerNickname = new ArrayList<String>();
       ArrayList<Player> players = new ArrayList<Player>();
+      Hashtable<String, Integer> topOpening = new Hashtable<String, Integer>();
       if(!new File("Players/").exists())new File("Players/").mkdir();
       System.out.println("Processing database file");
       do{
@@ -37,6 +38,11 @@ public class DBReader{
             }
             if(line.startsWith("[Opening")){
               tmp.opening = line.substring(10,line.length()-2);
+              if(topOpening.containsKey(tmp.opening)){
+                topOpening.put(tmp.opening,topOpening.get(tmp.opening)+1);
+              }else{
+                topOpening.put(tmp.opening,1);
+              }
             }
             if(line.equals("")){
               blankLineCpt++;
@@ -75,6 +81,16 @@ public class DBReader{
       }
       in.close();
       System.out.println(cpt+" Games read");
+
+
+  //    System.out.println(topOpening.toString());
+      Set keys = topOpening.keySet();
+      Iterator itr = keys.iterator();
+      String key="";
+      while (itr.hasNext()) { 
+        key = (String) itr.next();
+        System.out.println("Opening: "+key+" & Occurence: "+topOpening.get(key));
+      } 
     }catch (IOException e){
       e.printStackTrace();
     }
