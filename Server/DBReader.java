@@ -7,6 +7,7 @@ public class DBReader{
     try{
       FileInputStream in = new FileInputStream("Src/lichess_db_standard_rated_2013-01.pgn");
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+      Hashtable<String,Integer> topOpening = new Hashtable<String,Integer>();
       int cpt = 0;
       int lineCpt = 0;
       Hashtable<String,ArrayList<Integer>> playersHashtable = new Hashtable<String,ArrayList<Integer>>();
@@ -80,6 +81,8 @@ public class DBReader{
       }
       System.out.println(cptPlayer+" Player saved");
       //    System.out.println(topOpening.toString());
+
+      
       Set keys = topOpening.keySet();
       Iterator itr = keys.iterator();
       String key="";
