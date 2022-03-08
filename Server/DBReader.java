@@ -4,13 +4,12 @@ import data.structures.*;
 
 public class DBReader{
   public static void main(String[] args) {
-    try(FileInputStream in = new FileInputStream("Src/lichess_db_standard_rated_2013-01.pgn");){
+    try{
+      FileInputStream in = new FileInputStream("Src/lichess_db_standard_rated_2013-01.pgn");
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       int cpt = 0;
       int lineCpt = 0;
-      ArrayList<String> playerNickname = new ArrayList<String>();
-      ArrayList<Player> players = new ArrayList<Player>();
-      if(!new File("Players/").exists())new File("Players/").mkdir();
+      Hashtable<String,ArrayList<Integer>> playersHashtable = new Hashtable<String,ArrayList<Integer>>();
       System.out.println("Processing database file");
       do{
         Game tmp = new Game();
@@ -45,36 +44,36 @@ public class DBReader{
           lineCpt++;
         }while(blankLineCpt < 2);
         cpt++;
-        // System.out.println("=========== Game "+cpt+" - DONE ! ===========");
-        // System.out.println(tmp.blackPlayer+" > "+"Src/lichess_db_standard_rated_2013-01.pgn"+" > "+startingLine);
-        // System.out.println(tmp.whitePlayer+" > "+"Src/lichess_db_standard_rated_2013-01.pgn"+" > "+startingLine);
-        if(playerNickname.contains(tmp.blackPlayer)){
-          Player blackPlayer = players.get(playerNickname.indexOf(tmp.blackPlayer));
-          blackPlayer.addGame("Src/lichess_db_standard_rated_2013-01.pgn",(long)startingLine);
+        if(playersHashtable.containsKey(tmp.blackPlayer) && playersHashtable.containsKey(tmp.whitePlayer)){
+          ArrayList<Integer> blackGames = playersHashtable.get(tmp.blackPlayer);
+          ArrayList<Integer> whiteGames = playersHashtable.get(tmp.whitePlayer);
+          if(!blackGames.contains(lineCpt))blackGames.add(lineCpt);
+          if(!whiteGames.contains(lineCpt))whiteGames.add(lineCpt);
+        }else if(!playersHashtable.containsKey(tmp.blackPlayer)){
+          playersHashtable.put(tmp.blackPlayer,new ArrayList<Integer>());
+          playersHashtable.get(tmp.blackPlayer).add(lineCpt);
         }else{
-          Player blackPlayer = new Player();
-          blackPlayer.pseudo = tmp.blackPlayer;
-          blackPlayer.addGame("Src/lichess_db_standard_rated_2013-01.pgn",(long)startingLine);
-          playerNickname.add(blackPlayer.pseudo);
-          players.add(blackPlayer);
-        }
-        if(playerNickname.contains(tmp.whitePlayer)){
-          Player whitePlayer = players.get(playerNickname.indexOf(tmp.whitePlayer));
-          whitePlayer.addGame("Src/lichess_db_standard_rated_2013-01.pgn",(long)startingLine);
-        }else{
-          Player whitePlayer = new Player();
-          whitePlayer.pseudo = tmp.whitePlayer;
-          whitePlayer.addGame("Src/lichess_db_standard_rated_2013-01.pgn",(long)startingLine);
-          playerNickname.add(whitePlayer.pseudo);
-          players.add(whitePlayer);
+          playersHashtable.put(tmp.whitePlayer,new ArrayList<Integer>());
+          playersHashtable.get(tmp.whitePlayer).add(lineCpt);
         }
       }while(reader.ready());
       System.out.println("Saving data");
-      for(int i=0;i<players.size();i++){
-        players.get(i).savePlayer("Players/"+players.get(i).pseudo+".dat");
-      }
+      File output = new File("Src/lichess_db_standard_rated_2013-01.dat");
+      if(!output.exists())output.createNewFile();
+      FileOutputStream out = new FileOutputStream(output);
+      ObjectOutputStream oout = new ObjectOutputStream(out);
+      oout.writeObject(playersHashtable);
+      oout.close();
+      out.close();
       in.close();
       System.out.println(cpt+" Games read");
+      Enumeration<String> en = playersHashtable.keys();
+      int cptPlayer = 0;
+      while(en.hasMoreElements()){
+        cptPlayer++;
+        String key = en.nextElement();
+      }
+      System.out.println(cptPlayer+" Player saved");
     }catch (IOException e){
       e.printStackTrace();
     }
