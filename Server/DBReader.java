@@ -31,9 +31,22 @@ public class DBReader{
     }
   }
 
+  public static void displayOpeningIteration(Hashtable<String,Integer> hashtable) {
+    Set keys = hashtable.keySet();
+    Iterator itr = keys.iterator();
+    String key="";
+    while (itr.hasNext()) {
+      key = (String) itr.next();
+      System.out.println("Opening: "+key+" & Occurence: "+hashtable.get(key));
+    }
+  }
+
   public static void main(String[] args) {
+
     try{
-      FileInputStream in = new FileInputStream("Src/lichess_db_standard_rated_2013-01.pgn");
+      String dataFile = "Src/lichess_db_standard_rated_2013-01.pgn";
+      String playersDataFile = "Src/lichess_db_standard_rated_2013-01_player_data.dat";
+      FileInputStream in = new FileInputStream(dataFile);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       Hashtable<String,Integer> topOpening = new Hashtable<String,Integer>();
       int cpt = 0;
@@ -66,6 +79,7 @@ public class DBReader{
             }
             if(line.startsWith("[Opening")){
               tmp.opening = line.substring(10,line.length()-2);
+              //opening to Hashtable
               if(topOpening.containsKey(tmp.opening)){
                 topOpening.put(tmp.opening,topOpening.get(tmp.opening)+1);
               }else{
@@ -82,7 +96,7 @@ public class DBReader{
         extractPlayerData(playersHashtable,tmp);
       }while(reader.ready());
       System.out.println("Saving data");
-      File output = new File("Src/lichess_db_standard_rated_2013-01_player_data.dat");
+      File output = new File(playersDataFile);
       savePlayerData(output,playersHashtable);
       in.close();
       //================================ Print de debug ================================
@@ -94,13 +108,7 @@ public class DBReader{
         String key = en.nextElement();
       }
       System.out.println(cptPlayer+" Player saved");
-      Set keys = topOpening.keySet();
-      Iterator itr = keys.iterator();
-      String key="";
-      while (itr.hasNext()) {
-        key = (String) itr.next();
-        System.out.println("Opening: "+key+" & Occurence: "+topOpening.get(key));
-      }
+    //  displayOpeningIteration(topOpening);
     }catch (IOException e){
       e.printStackTrace();
     }
