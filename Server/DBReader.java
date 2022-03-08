@@ -4,18 +4,33 @@ import data.structures.*;
 
 public class DBReader{
   public static void extractPlayerData(Hashtable<String,ArrayList<Integer>> playersHashtable, Game game){
-    if(playersHashtable.containsKey(game.blackPlayer) && playersHashtable.containsKey(game.whitePlayer)){
-      ArrayList<Integer> blackGames = playersHashtable.get(game.blackPlayer);
-      ArrayList<Integer> whiteGames = playersHashtable.get(game.whitePlayer);
-      if(!blackGames.contains(game.line))blackGames.add(game.line);
-      if(!whiteGames.contains(game.line))whiteGames.add(game.line);
-    }else if(!playersHashtable.containsKey(game.blackPlayer)){
+    // if(playersHashtable.containsKey(game.blackPlayer) && playersHashtable.containsKey(game.whitePlayer)){
+    //   ArrayList<Integer> blackGames = playersHashtable.get(game.blackPlayer);
+    //   ArrayList<Integer> whiteGames = playersHashtable.get(game.whitePlayer);
+    //   if(!blackGames.contains(game.line))blackGames.add(game.line);
+    //   if(!whiteGames.contains(game.line))whiteGames.add(game.line);
+    // }else
+
+    if(playersHashtable.containsKey(game.blackPlayer)) {
+      playersHashtable.get(game.blackPlayer).add(game.line);
+    } else{
       playersHashtable.put(game.blackPlayer,new ArrayList<Integer>());
       playersHashtable.get(game.blackPlayer).add(game.line);
-    }else{
+    }
+    if(playersHashtable.containsKey(game.whitePlayer)) {
+      playersHashtable.get(game.whitePlayer).add(game.line);
+    } else{
       playersHashtable.put(game.whitePlayer,new ArrayList<Integer>());
       playersHashtable.get(game.whitePlayer).add(game.line);
     }
+
+    // if(!playersHashtable.containsKey(game.blackPlayer)){
+    //   playersHashtable.put(game.blackPlayer,new ArrayList<Integer>());
+    //   playersHashtable.get(game.blackPlayer).add(game.line);
+    // }else{
+    //   playersHashtable.put(game.whitePlayer,new ArrayList<Integer>());
+    //   playersHashtable.get(game.whitePlayer).add(game.line);
+    // }
   }
 
   public static void savePlayerData(File playerDataFile, Hashtable<String,ArrayList<Integer>> playersHashtable){
@@ -23,6 +38,7 @@ public class DBReader{
       if(!playerDataFile.exists())playerDataFile.createNewFile();
       FileOutputStream out = new FileOutputStream(playerDataFile);
       ObjectOutputStream oout = new ObjectOutputStream(out);
+    //  oout.writeObject(playersHashtable);
       oout.writeObject(playersHashtable);
       oout.close();
       out.close();
@@ -52,15 +68,50 @@ public class DBReader{
     String topOpening=listKeys.get((int)Math.random()*listKeys.size());
     Set keys = localHashtable.keySet();
     Iterator itr = keys.iterator();
+    if(top==1)
+      System.out.println("============================\nThe most used opening is:");
+    else if(top>1)
+      System.out.println("============================\nThe most used openings are:");
+    else if(top<1) {
+      System.out.println("============================\nYou have entered an invalid number, we will consider as a '1'.");
+      top=1;
+    }
     for(int i=1;i<=top;i++) {
       for(int j=0;j<listKeys.size();j++) {
         if(localHashtable.get(listKeys.get(j))>localHashtable.get(topOpening)) {
           topOpening=listKeys.get(j);
         }
       }
-      System.out.println("Top "+i+" opening :: "+topOpening+" with "+localHashtable.get(topOpening)+" iterations");
+      System.out.println("Top "+i+" opening :: "+topOpening+" with "+localHashtable.get(topOpening)+" iterations.");
       listKeys.remove(topOpening);
       topOpening=listKeys.get((int)Math.random()*listKeys.size());
+    }
+  }
+
+  public static void extractActivePlayers(Hashtable<String,ArrayList<Integer>> playersHashtable, int top) {
+    ArrayList<String> listKeys = Collections.list(playersHashtable.keys());
+    String activePlayer=listKeys.get((int)Math.random()*listKeys.size());
+    Set keys = playersHashtable.keySet();
+    Iterator itr = keys.iterator();
+    if(top==1)
+      System.out.println("============================\nThe most active player is:");
+    else if(top>1)
+      System.out.println("============================\nThe most active players are:");
+    else if(top<1) {
+      System.out.println("============================\nYou have entered an invalid number, we will consider as a '1'.");
+      top=1;
+    }
+    for(int i=1;i<=top;i++) {
+     for(int j=0;j<listKeys.size();j++) {
+       //System.out.println(playersHashtable.get(listKeys.get(j)).size());
+        if(playersHashtable.get(listKeys.get(j)).size()>playersHashtable.get(activePlayer).size()) {
+          activePlayer=listKeys.get(j);
+        }
+       //System.out.println(playersHashtable.get(listKeys.get(j)));
+     }
+     System.out.println(i+". "+activePlayer+" with "+playersHashtable.get(activePlayer).size()+" games.");
+     listKeys.remove(activePlayer);
+     activePlayer=listKeys.get((int)Math.random()*listKeys.size());
     }
   }
 
@@ -72,10 +123,10 @@ public class DBReader{
       FileInputStream in = new FileInputStream(dataFile);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       Hashtable<String,Integer> openingHashtable = new Hashtable<String,Integer>();
+      Hashtable<String,ArrayList<Integer>> playersHashtable = new Hashtable<String,ArrayList<Integer>>();
       int cpt = 0;
       int lineCpt = 0;
-      Hashtable<String,ArrayList<Integer>> playersHashtable = new Hashtable<String,ArrayList<Integer>>();
-      System.out.println("Processing database file");
+      System.out.println("Processing database file...");
       do{
         Game tmp = new Game();
         int startingLine = lineCpt;
@@ -113,21 +164,16 @@ public class DBReader{
         extractPlayerData(playersHashtable,tmp);
         extractOpeningIteration(openingHashtable,tmp);
       }while(reader.ready());
-      System.out.println("Saving data");
+      System.out.println("Saving data...");
       File output = new File(playersDataFile);
       savePlayerData(output,playersHashtable);
       in.close();
       //================================ Print de debug ================================
-      System.out.println(cpt+" Games read");
-      Enumeration<String> en = playersHashtable.keys();
-      int cptPlayer = 0;
-      while(en.hasMoreElements()){
-        cptPlayer++;
-        String key = en.nextElement();
-      }
-      System.out.println(cptPlayer+" Player saved");
+      System.out.println("==> "+cpt+" Games read");
+      System.out.println("==> "+playersHashtable.size()+" Players saved");
     //  displayOpeningIteration(openingHashtable);
       displayTopOpening(openingHashtable,5);
+      extractActivePlayers(playersHashtable,2);
     }catch (IOException e){
       e.printStackTrace();
     }
