@@ -9,6 +9,7 @@ public class Game{
   public String blackPlayer;
   public String result;
   public String opening;
+  public int line;
 
   public Game(){
   }

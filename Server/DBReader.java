@@ -3,9 +3,37 @@ import java.util.*;
 import data.structures.*;
 
 public class DBReader{
+  public static void extractPlayerData(Hashtable<String,ArrayList<Integer>> playersHashtable, Game game){
+    if(playersHashtable.containsKey(game.blackPlayer) && playersHashtable.containsKey(game.whitePlayer)){
+      ArrayList<Integer> blackGames = playersHashtable.get(game.blackPlayer);
+      ArrayList<Integer> whiteGames = playersHashtable.get(game.whitePlayer);
+      if(!blackGames.contains(game.line))blackGames.add(game.line);
+      if(!whiteGames.contains(game.line))whiteGames.add(game.line);
+    }else if(!playersHashtable.containsKey(game.blackPlayer)){
+      playersHashtable.put(game.blackPlayer,new ArrayList<Integer>());
+      playersHashtable.get(game.blackPlayer).add(game.line);
+    }else{
+      playersHashtable.put(game.whitePlayer,new ArrayList<Integer>());
+      playersHashtable.get(game.whitePlayer).add(game.line);
+    }
+  }
+
+  public static void savePlayerData(File playerDataFile, Hashtable<String,ArrayList<Integer>> playersHashtable){
+    try{
+      if(!playerDataFile.exists())playerDataFile.createNewFile();
+      FileOutputStream out = new FileOutputStream(playerDataFile);
+      ObjectOutputStream oout = new ObjectOutputStream(out);
+      oout.writeObject(playersHashtable);
+      oout.close();
+      out.close();
+    }catch(IOException e){
+      e.printStackTrace();
+    }
+  }
+
   public static void main(String[] args) {
     try{
-      FileInputStream in = new FileInputStream("Src/lichess_db_standard_rated_2013-01.pgn");
+      FileInputStream in = new FileInputStream("Src/lichess_db_standard_rated_2013-01_player_data.dat");
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       Hashtable<String,Integer> topOpening = new Hashtable<String,Integer>();
       int cpt = 0;
@@ -15,6 +43,7 @@ public class DBReader{
       do{
         Game tmp = new Game();
         int startingLine = lineCpt;
+        tmp.line = startingLine;
         String line = "";
         int blankLineCpt = 0;
         do{
@@ -50,28 +79,13 @@ public class DBReader{
           lineCpt++;
         }while(blankLineCpt < 2);
         cpt++;
-        if(playersHashtable.containsKey(tmp.blackPlayer) && playersHashtable.containsKey(tmp.whitePlayer)){
-          ArrayList<Integer> blackGames = playersHashtable.get(tmp.blackPlayer);
-          ArrayList<Integer> whiteGames = playersHashtable.get(tmp.whitePlayer);
-          if(!blackGames.contains(lineCpt))blackGames.add(lineCpt);
-          if(!whiteGames.contains(lineCpt))whiteGames.add(lineCpt);
-        }else if(!playersHashtable.containsKey(tmp.blackPlayer)){
-          playersHashtable.put(tmp.blackPlayer,new ArrayList<Integer>());
-          playersHashtable.get(tmp.blackPlayer).add(lineCpt);
-        }else{
-          playersHashtable.put(tmp.whitePlayer,new ArrayList<Integer>());
-          playersHashtable.get(tmp.whitePlayer).add(lineCpt);
-        }
+        extractPlayerData(playersHashtable,tmp);
       }while(reader.ready());
       System.out.println("Saving data");
-      File output = new File("Src/lichess_db_standard_rated_2013-01.dat");
-      if(!output.exists())output.createNewFile();
-      FileOutputStream out = new FileOutputStream(output);
-      ObjectOutputStream oout = new ObjectOutputStream(out);
-      oout.writeObject(playersHashtable);
-      oout.close();
-      out.close();
+      File output = new File("Src/lichess_db_standard_rated_2013-01_player_data.dat");
+      savePlayerData(output,playersHashtable);
       in.close();
+      //================================ Print de debug ================================
       System.out.println(cpt+" Games read");
       Enumeration<String> en = playersHashtable.keys();
       int cptPlayer = 0;
@@ -80,9 +94,6 @@ public class DBReader{
         String key = en.nextElement();
       }
       System.out.println(cptPlayer+" Player saved");
-      //    System.out.println(topOpening.toString());
-
-      
       Set keys = topOpening.keySet();
       Iterator itr = keys.iterator();
       String key="";
