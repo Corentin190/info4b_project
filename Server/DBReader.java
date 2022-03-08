@@ -33,7 +33,7 @@ public class DBReader{
 
   public static void main(String[] args) {
     try{
-      FileInputStream in = new FileInputStream("Src/lichess_db_standard_rated_2013-01.dat");
+      FileInputStream in = new FileInputStream("Src/lichess_db_standard_rated_2013-01.pgn");
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       Hashtable<String,Integer> topOpening = new Hashtable<String,Integer>();
       int cpt = 0;
