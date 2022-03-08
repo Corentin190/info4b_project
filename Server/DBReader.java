@@ -36,6 +36,11 @@ public class DBReader{
             }
             if(line.startsWith("[Opening")){
               tmp.opening = line.substring(10,line.length()-2);
+              if(topOpening.containsKey(tmp.opening)){
+                topOpening.put(tmp.opening,topOpening.get(tmp.opening)+1);
+              }else{
+                topOpening.put(tmp.opening,1);
+              }
             }
             if(line.equals("")){
               blankLineCpt++;
@@ -74,6 +79,14 @@ public class DBReader{
         String key = en.nextElement();
       }
       System.out.println(cptPlayer+" Player saved");
+      //    System.out.println(topOpening.toString());
+      Set keys = topOpening.keySet();
+      Iterator itr = keys.iterator();
+      String key="";
+      while (itr.hasNext()) {
+        key = (String) itr.next();
+        System.out.println("Opening: "+key+" & Occurence: "+topOpening.get(key));
+      }
     }catch (IOException e){
       e.printStackTrace();
     }
