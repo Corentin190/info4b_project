@@ -4,13 +4,6 @@ import data.structures.*;
 
 public class DBReader{
   public static void extractPlayerData(Hashtable<String,ArrayList<Integer>> playersHashtable, Game game){
-    // if(playersHashtable.containsKey(game.blackPlayer) && playersHashtable.containsKey(game.whitePlayer)){
-    //   ArrayList<Integer> blackGames = playersHashtable.get(game.blackPlayer);
-    //   ArrayList<Integer> whiteGames = playersHashtable.get(game.whitePlayer);
-    //   if(!blackGames.contains(game.line))blackGames.add(game.line);
-    //   if(!whiteGames.contains(game.line))whiteGames.add(game.line);
-    // }else
-
     if(playersHashtable.containsKey(game.blackPlayer)) {
       playersHashtable.get(game.blackPlayer).add(game.line);
     } else{
@@ -23,14 +16,6 @@ public class DBReader{
       playersHashtable.put(game.whitePlayer,new ArrayList<Integer>());
       playersHashtable.get(game.whitePlayer).add(game.line);
     }
-
-    // if(!playersHashtable.containsKey(game.blackPlayer)){
-    //   playersHashtable.put(game.blackPlayer,new ArrayList<Integer>());
-    //   playersHashtable.get(game.blackPlayer).add(game.line);
-    // }else{
-    //   playersHashtable.put(game.whitePlayer,new ArrayList<Integer>());
-    //   playersHashtable.get(game.whitePlayer).add(game.line);
-    // }
   }
 
   public static void savePlayerData(File playerDataFile, Hashtable<String,ArrayList<Integer>> playersHashtable){
@@ -38,7 +23,6 @@ public class DBReader{
       if(!playerDataFile.exists())playerDataFile.createNewFile();
       FileOutputStream out = new FileOutputStream(playerDataFile);
       ObjectOutputStream oout = new ObjectOutputStream(out);
-    //  oout.writeObject(playersHashtable);
       oout.writeObject(playersHashtable);
       oout.close();
       out.close();
@@ -118,62 +102,67 @@ public class DBReader{
   public static void main(String[] args) {
 
     try{
-      String dataFile = "Src/lichess_db_standard_rated_2013-01.pgn";
-      String playersDataFile = "Src/lichess_db_standard_rated_2013-01_player_data.dat";
-      FileInputStream in = new FileInputStream(dataFile);
-      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-      Hashtable<String,Integer> openingHashtable = new Hashtable<String,Integer>();
-      Hashtable<String,ArrayList<Integer>> playersHashtable = new Hashtable<String,ArrayList<Integer>>();
-      int cpt = 0;
-      int lineCpt = 0;
-      System.out.println("Processing database file...");
-      do{
-        Game tmp = new Game();
-        int startingLine = lineCpt;
-        tmp.line = startingLine;
-        String line = "";
-        int blankLineCpt = 0;
-        do{
-          line = reader.readLine();
-          if(line != null){
-            if(line.startsWith("[Event")){
-              tmp.type = line.substring(8,line.length()-2);
-            }
-            if(line.startsWith("[Site")){
-              tmp.url = line.substring(7,line.length()-2);
-            }
-            if(line.startsWith("[White ")){
-              tmp.whitePlayer = line.substring(8,line.length()-2);
-            }
-            if(line.startsWith("[Black ")){
-              tmp.blackPlayer = line.substring(8,line.length()-2);
-            }
-            if(line.startsWith("[Result")){
-              tmp.result = line.substring(9,line.length()-2);
-            }
-            if(line.startsWith("[Opening")){
-              tmp.opening = line.substring(10,line.length()-2);
-            }
-            if(line.equals("")){
-              blankLineCpt++;
-            }
-          }
-          lineCpt++;
-        }while(blankLineCpt < 2);
-        cpt++;
-        extractPlayerData(playersHashtable,tmp);
-        extractOpeningIteration(openingHashtable,tmp);
-      }while(reader.ready());
-      System.out.println("Saving data...");
-      File output = new File(playersDataFile);
-      savePlayerData(output,playersHashtable);
-      in.close();
-      //================================ Print de debug ================================
-      System.out.println("==> "+cpt+" Games read");
-      System.out.println("==> "+playersHashtable.size()+" Players saved");
-    //  displayOpeningIteration(openingHashtable);
-      displayTopOpening(openingHashtable,5);
-      extractActivePlayers(playersHashtable,2);
+      File folder = new File("Src/");
+      for(int i=0;i<folder.list().length;i++){
+        String dataFile = folder.list()[i];
+        if(dataFile.substring(dataFile.length()-3,dataFile.length()).equals("pgn")){
+          String playersDataFile = "Src/"+dataFile.substring(dataFile.length()-3,dataFile.length())+"_player_data.dat";
+          FileInputStream in = new FileInputStream("Src/"+dataFile);
+          BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+          Hashtable<String,Integer> openingHashtable = new Hashtable<String,Integer>();
+          Hashtable<String,ArrayList<Integer>> playersHashtable = new Hashtable<String,ArrayList<Integer>>();
+          int cpt = 0;
+          int lineCpt = 0;
+          System.out.println("Processing "+dataFile);
+          do{
+            Game tmp = new Game();
+            int startingLine = lineCpt;
+            tmp.line = startingLine;
+            String line = "";
+            int blankLineCpt = 0;
+            do{
+              line = reader.readLine();
+              if(line != null){
+                if(line.startsWith("[Event")){
+                  tmp.type = line.substring(8,line.length()-2);
+                }
+                if(line.startsWith("[Site")){
+                  tmp.url = line.substring(7,line.length()-2);
+                }
+                if(line.startsWith("[White ")){
+                  tmp.whitePlayer = line.substring(8,line.length()-2);
+                }
+                if(line.startsWith("[Black ")){
+                  tmp.blackPlayer = line.substring(8,line.length()-2);
+                }
+                if(line.startsWith("[Result")){
+                  tmp.result = line.substring(9,line.length()-2);
+                }
+                if(line.startsWith("[Opening")){
+                  tmp.opening = line.substring(10,line.length()-2);
+                }
+                if(line.equals("")){
+                  blankLineCpt++;
+                }
+              }
+              lineCpt++;
+            }while(blankLineCpt < 2);
+            cpt++;
+            extractPlayerData(playersHashtable,tmp);
+            extractOpeningIteration(openingHashtable,tmp);
+          }while(reader.ready());
+          System.out.println("Saving data...");
+          File output = new File(playersDataFile);
+          savePlayerData(output,playersHashtable);
+          in.close();
+          //================================ Print de debug ================================
+          System.out.println("==> "+cpt+" Games read");
+          System.out.println("==> "+playersHashtable.size()+" Players saved");
+        //  displayOpeningIteration(openingHashtable);
+          displayTopOpening(openingHashtable,0);
+          extractActivePlayers(playersHashtable,0);
+        }
+      }
     }catch (IOException e){
       e.printStackTrace();
     }
