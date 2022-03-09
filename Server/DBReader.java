@@ -104,8 +104,12 @@ public class DBReader{
     int overall_cpt = 0;
     try{
       File folder = new File("Src/");
+      ArrayList<String> fileFolder = new ArrayList<>();
       for(int i=0;i<folder.list().length;i++){
-        String dataFile = folder.list()[i];
+        fileFolder.add(folder.list()[i]);
+      }
+      for(int i=0;i<fileFolder.size();i++){
+        String dataFile = fileFolder.get(i);
         if(dataFile.endsWith(".pgn")){
           String playersDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_player_data.dat";
           FileInputStream in = new FileInputStream("Src/"+dataFile);

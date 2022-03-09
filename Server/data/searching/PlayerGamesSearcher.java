@@ -18,10 +18,13 @@ public class PlayerGamesSearcher{
       File root = new File("Src/");
       for(int i=0;i<root.list().length;i++){
         if(root.list()[i].endsWith("_player_data.dat")){
-          System.out.println("Reading "+root.list()[i]);
+          int cpt = playerGames.size();
+          System.out.println("======= Reading "+root.list()[i]+"=======");
           FileInputStream in = new FileInputStream("Src/"+root.list()[i]);
+          System.out.println("Reading content");
           ObjectInputStream oin = new ObjectInputStream(in);
           Hashtable<String,ArrayList<Integer>> playersHashtable = (Hashtable<String,ArrayList<Integer>>)oin.readObject();
+          System.out.println("Scanning for "+this.playerName+" games");
           if(playersHashtable.containsKey(this.playerName)){
             ArrayList<Integer> gameList = playersHashtable.get(this.playerName);
             for(int j=0;j<gameList.size();j++){
@@ -29,8 +32,10 @@ public class PlayerGamesSearcher{
               playerGames.add(new Game(fileName+".dat",gameList.get(j)));
             }
           }
+          System.out.println((playerGames.size()-cpt)+" games found");
           oin.close();
           in.close();
+          System.out.println("file closed");
         }
       }
     }catch(IOException e) {
