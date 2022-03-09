@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 import data.structures.*;
+import data.searching.*;
 
 public class DBReader{
   public static void extractPlayerData(Hashtable<String,ArrayList<Integer>> playersHashtable, Game game){
@@ -101,6 +102,7 @@ public class DBReader{
 
   public static void main(String[] args) {
     int overall_cpt = 0;
+    PlayerGamesSearcher test = new PlayerGamesSearcher("test");
     try{
       File folder = new File("Src/");
       for(int i=0;i<folder.list().length;i++){
