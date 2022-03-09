@@ -100,13 +100,13 @@ public class DBReader{
   }
 
   public static void main(String[] args) {
-
+    int overall_cpt = 0;
     try{
       File folder = new File("Src/");
       for(int i=0;i<folder.list().length;i++){
         String dataFile = folder.list()[i];
-        if(dataFile.substring(dataFile.length()-3,dataFile.length()).equals("pgn")){
-          String playersDataFile = "Src/"+dataFile.substring(dataFile.length()-3,dataFile.length())+"_player_data.dat";
+        if(dataFile.substring(dataFile.length()-4,dataFile.length()).equals(".pgn")){
+          String playersDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_player_data.dat";
           FileInputStream in = new FileInputStream("Src/"+dataFile);
           BufferedReader reader = new BufferedReader(new InputStreamReader(in));
           Hashtable<String,Integer> openingHashtable = new Hashtable<String,Integer>();
@@ -161,8 +161,10 @@ public class DBReader{
         //  displayOpeningIteration(openingHashtable);
           displayTopOpening(openingHashtable,0);
           extractActivePlayers(playersHashtable,0);
+          overall_cpt += cpt;
         }
       }
+      System.out.println("\n\n==> "+overall_cpt+" Games read across all files");
     }catch (IOException e){
       e.printStackTrace();
     }
