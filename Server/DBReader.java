@@ -41,8 +41,8 @@ public class DBReader{
 
   public static void displayOpeningIteration(Hashtable<String,Integer> openingHashtable) {
     openingHashtable.forEach((key, value) -> {
-            System.out.println("Opening: "+key+" & Iterations: "+value);
-        });
+      System.out.println("Opening: "+key+" & Iterations: "+value);
+    });
   }
 
   public static void displayTopOpening(Hashtable<String,Integer> openingHashtable, int top) {
@@ -53,9 +53,9 @@ public class DBReader{
     Set keys = localHashtable.keySet();
     Iterator itr = keys.iterator();
     if(top==1)
-      System.out.println("============================\nThe most used opening is:");
+    System.out.println("============================\nThe most used opening is:");
     else if(top>1)
-      System.out.println("============================\nThe most used openings are:");
+    System.out.println("============================\nThe most used openings are:");
     else if(top<1) {
       System.out.println("============================\nYou have entered an invalid number, we will consider as a '1'.");
       top=1;
@@ -78,24 +78,24 @@ public class DBReader{
     Set keys = playersHashtable.keySet();
     Iterator itr = keys.iterator();
     if(top==1)
-      System.out.println("============================\nThe most active player is:");
+    System.out.println("============================\nThe most active player is:");
     else if(top>1)
-      System.out.println("============================\nThe most active players are:");
+    System.out.println("============================\nThe most active players are:");
     else if(top<1) {
       System.out.println("============================\nYou have entered an invalid number, we will consider as a '1'.");
       top=1;
     }
     for(int i=1;i<=top;i++) {
-     for(int j=0;j<listKeys.size();j++) {
-       //System.out.println(playersHashtable.get(listKeys.get(j)).size());
+      for(int j=0;j<listKeys.size();j++) {
+        //System.out.println(playersHashtable.get(listKeys.get(j)).size());
         if(playersHashtable.get(listKeys.get(j)).size()>playersHashtable.get(activePlayer).size()) {
           activePlayer=listKeys.get(j);
         }
-       //System.out.println(playersHashtable.get(listKeys.get(j)));
-     }
-     System.out.println(i+". "+activePlayer+" with "+playersHashtable.get(activePlayer).size()+" games.");
-     listKeys.remove(activePlayer);
-     activePlayer=listKeys.get((int)Math.random()*listKeys.size());
+        //System.out.println(playersHashtable.get(listKeys.get(j)));
+      }
+      System.out.println(i+". "+activePlayer+" with "+playersHashtable.get(activePlayer).size()+" games.");
+      listKeys.remove(activePlayer);
+      activePlayer=listKeys.get((int)Math.random()*listKeys.size());
     }
   }
 
@@ -151,16 +151,16 @@ public class DBReader{
             extractPlayerData(playersHashtable,tmp);
             extractOpeningIteration(openingHashtable,tmp);
           }while(reader.ready());
-          System.out.println("Saving data...");
+          System.out.println("Saving data as "+playersDataFile);
           File output = new File(playersDataFile);
           savePlayerData(output,playersHashtable);
           in.close();
           //================================ Print de debug ================================
           System.out.println("==> "+cpt+" Games read");
           System.out.println("==> "+playersHashtable.size()+" Players saved");
-        //  displayOpeningIteration(openingHashtable);
-          displayTopOpening(openingHashtable,0);
-          extractActivePlayers(playersHashtable,0);
+          //  displayOpeningIteration(openingHashtable);
+          // displayTopOpening(openingHashtable,0);
+          // extractActivePlayers(playersHashtable,0);
           overall_cpt += cpt;
         }
       }
