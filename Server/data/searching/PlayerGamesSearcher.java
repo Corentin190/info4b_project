@@ -14,22 +14,31 @@ public class PlayerGamesSearcher{
   }
 
   public Game[] load(){
-    File root = new File("Src/");
-    for(int i=0;i<root.list().length;i++){
-      if(root.list()[i].endsWith("_player_data.dat")){
-        System.out.println("Reading "+root.list()[i]);
-        FileInputStream in = new FileInputStream("Src/"+root.list()[i]);
-        ObjectInputStream oin = new ObjectInputStream(in);
-        Hashtable<String,ArrayList<Integer>> playersHashtable = oin.readObject();
-        if(playersHashtable.containsKey(this.playerName)){
-          ArrayList<Integer> gameList = playersHashtable.get(this.playerName);
-          for(int j=0;j<gameList.size();j++){
-            playerGames.add(new Game(root.list()[i],gameList.get(j)));
+    try{
+      File root = new File("Src/");
+      for(int i=0;i<root.list().length;i++){
+        if(root.list()[i].endsWith("_player_data.dat")){
+          System.out.println("Reading "+root.list()[i]);
+          FileInputStream in = new FileInputStream("Src/"+root.list()[i]);
+          ObjectInputStream oin = new ObjectInputStream(in);
+          Hashtable<String,ArrayList<Integer>> playersHashtable = (Hashtable<String,ArrayList<Integer>>)oin.readObject();
+          if(playersHashtable.containsKey(this.playerName)){
+            ArrayList<Integer> gameList = playersHashtable.get(this.playerName);
+            for(int j=0;j<gameList.size();j++){
+              String fileName = root.list()[i].substring(0,root.list()[i].length()-16);
+              playerGames.add(new Game(fileName+".dat",gameList.get(j)));
+            }
           }
+          oin.close();
+          in.close();
         }
       }
+    }catch(IOException e) {
+      e.printStackTrace();
+    }catch(ClassNotFoundException e){
+      e.printStackTrace();
     }
-    if(playerGames.size()>0)return playerGames.toArray();
+    if(playerGames.size()>0)return (Game[])playerGames.toArray();
     else return null;
   }
 }
