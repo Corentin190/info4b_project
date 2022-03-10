@@ -28,26 +28,29 @@ public class PlayerGamesSearcher{
           Boolean found = false;
           while(reader.ready() && !found){
             line = reader.readLine();
-            if(line.startsWith("[Pseudo \""+this.playerName))found = true;
+            if(line.equals("[Pseudo \""+this.playerName+"\"]"))found = true;
           }
           if(found){
             line = reader.readLine();
             StringTokenizer tokenizer = new StringTokenizer(line);
             while(tokenizer.hasMoreTokens()){
-              int lineNb = Integer.parseInt(tokenizer.nextToken());
-              playerGames.add(new Game(root.list()[i].substring(0,root.list()[i].length()-16)+".pgn",lineNb));
+              long startingByte = Long.parseLong(tokenizer.nextToken());
+              //System.out.println(startingByte);
+              playerGames.add(new Game(root.list()[i].substring(0,root.list()[i].length()-16)+".pgn",startingByte));
             }
           }
-          System.out.println((playerGames.size()-cpt)+" games found");
+          //System.out.println((playerGames.size()-cpt)+" games found");
           reader.close();
           in.close();
-          System.out.println("file closed");
+          //System.out.println("file closed");
         }
       }
     }catch(IOException e) {
       e.printStackTrace();
     }
-    if(playerGames.size()>0)return (Game[])playerGames.toArray();
+    Game[] res = new Game[playerGames.size()];
+    playerGames.toArray(res);
+    if(playerGames!=null && playerGames.size()>0)return res;
     else return null;
   }
 }

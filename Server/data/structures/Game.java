@@ -12,23 +12,23 @@ public class Game{
   public String opening;
   public ArrayList<String> moves;
   public int line;
+  public long startingByte;
 
   public Game(){
     moves = new ArrayList<String>();
   }
 
-  public Game(String file, int line){
-    this.line = line;
+  public Game(String file, long startingByte){
+    this.startingByte = startingByte;
     moves = new ArrayList<String>();
     try {
       FileInputStream in = new FileInputStream("Src/"+file);
+      in.skip(this.startingByte);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       int blankLineCpt = 0;
-      for(int i=0;i<line;i++){
-        reader.readLine();
-      }
       do{
         String lineContent = reader.readLine();
+        //System.out.println(lineContent);
         if(lineContent != null){
           if(lineContent.startsWith("[Event")){
             this.type = lineContent.substring(8,lineContent.length()-2);

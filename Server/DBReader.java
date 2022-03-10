@@ -4,22 +4,22 @@ import data.structures.*;
 import data.searching.*;
 
 public class DBReader{
-  public static void extractPlayerData(Hashtable<String,ArrayList<Integer>> playersHashtable, Game game){
+  public static void extractPlayerData(Hashtable<String,ArrayList<Long>> playersHashtable, Game game){
     if(playersHashtable.containsKey(game.blackPlayer)) {
-      playersHashtable.get(game.blackPlayer).add(game.line);
+      playersHashtable.get(game.blackPlayer).add(game.startingByte);
     } else{
-      playersHashtable.put(game.blackPlayer,new ArrayList<Integer>());
-      playersHashtable.get(game.blackPlayer).add(game.line);
+      playersHashtable.put(game.blackPlayer,new ArrayList<Long>());
+      playersHashtable.get(game.blackPlayer).add(game.startingByte);
     }
     if(playersHashtable.containsKey(game.whitePlayer)) {
-      playersHashtable.get(game.whitePlayer).add(game.line);
+      playersHashtable.get(game.whitePlayer).add(game.startingByte);
     } else{
-      playersHashtable.put(game.whitePlayer,new ArrayList<Integer>());
-      playersHashtable.get(game.whitePlayer).add(game.line);
+      playersHashtable.put(game.whitePlayer,new ArrayList<Long>());
+      playersHashtable.get(game.whitePlayer).add(game.startingByte);
     }
   }
 
-  public static void savePlayerData(File playerDataFile, Hashtable<String,ArrayList<Integer>> playersHashtable){
+  public static void savePlayerData(File playerDataFile, Hashtable<String,ArrayList<Long>> playersHashtable){
     try{
       if(!playerDataFile.exists())playerDataFile.createNewFile();
       FileOutputStream out = new FileOutputStream(playerDataFile);
@@ -29,7 +29,7 @@ public class DBReader{
       while(keys.hasMoreElements()){
         String key = keys.nextElement();
         writer.write("[Pseudo \""+key+"\"]\n");
-        ArrayList<Integer> value = playersHashtable.get(key);
+        ArrayList<Long> value = playersHashtable.get(key);
         for(int i=0;value != null && i<value.size();i++){
           writer.write(value.get(i)+" ");
         }
@@ -83,7 +83,7 @@ public class DBReader{
     }
   }
 
-  public static void extractActivePlayers(Hashtable<String,ArrayList<Integer>> playersHashtable, int top) {
+  public static void extractActivePlayers(Hashtable<String,ArrayList<Long>> playersHashtable, int top) {
     ArrayList<String> listKeys = Collections.list(playersHashtable.keys());
     String activePlayer=listKeys.get((int)Math.random()*listKeys.size());
     Set keys = playersHashtable.keySet();
@@ -125,7 +125,7 @@ public class DBReader{
           FileInputStream in = new FileInputStream("Src/"+dataFile);
           BufferedReader reader = new BufferedReader(new InputStreamReader(in));
           Hashtable<String,Integer> openingHashtable = new Hashtable<String,Integer>();
-          Hashtable<String,ArrayList<Integer>> playersHashtable = new Hashtable<String,ArrayList<Integer>>();
+          Hashtable<String,ArrayList<Long>> playersHashtable = new Hashtable<String,ArrayList<Long>>();
           int cpt = 0;
           int lineCpt = 0;
           System.out.println("Processing "+dataFile);
@@ -133,9 +133,11 @@ public class DBReader{
             Game tmp = new Game();
             int startingLine = lineCpt;
             tmp.line = startingLine;
+            System.out.println(startingLine+" : "+tmp.startingByte);
             String line = "";
             int blankLineCpt = 0;
             do{
+              if()tmp.startingByte = in.getChannel().position();
               line = reader.readLine();
               if(line != null){
                 if(line.startsWith("[Event")){
