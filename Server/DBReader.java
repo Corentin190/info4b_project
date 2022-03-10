@@ -33,7 +33,7 @@ public class DBReader{
         for(int i=0;value != null && i<value.size();i++){
           writer.write(value.get(i)+" ");
         }
-        writer.write("\n");
+        writer.write("\n[NumberOfGame "+value.size()+"]\n");
       }
       writer.close();
       out.close();

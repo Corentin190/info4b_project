@@ -39,10 +39,10 @@ public class PlayerGamesSearcher{
               playerGames.add(new Game(root.list()[i].substring(0,root.list()[i].length()-16)+".pgn",startingByte));
             }
           }
-          //System.out.println((playerGames.size()-cpt)+" games found");
+          System.out.println((playerGames.size()-cpt)+" games found");
           reader.close();
           in.close();
-          //System.out.println("file closed");
+          System.out.println("file closed");
         }
       }
     }catch(IOException e) {
