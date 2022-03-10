@@ -24,9 +24,11 @@ public class Game{
       FileInputStream in = new FileInputStream("Src/"+file);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       int blankLineCpt = 0;
+      for(int i=0;i<line;i++){
+        reader.readLine();
+      }
       do{
         String lineContent = reader.readLine();
-        System.out.println(lineContent);
         if(lineContent != null){
           if(lineContent.startsWith("[Event")){
             this.type = lineContent.substring(8,lineContent.length()-2);
@@ -54,7 +56,7 @@ public class Game{
       reader.close();
       in.close();
     } catch(IOException e) {
-
+      e.printStackTrace();
     }
   }
 
