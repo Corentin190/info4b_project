@@ -128,16 +128,16 @@ public class DBReader{
           Hashtable<String,ArrayList<Long>> playersHashtable = new Hashtable<String,ArrayList<Long>>();
           int cpt = 0;
           int lineCpt = 0;
+          int byteCpt = 0;
           System.out.println("Processing "+dataFile);
           do{
             Game tmp = new Game();
-            int startingLine = lineCpt;
-            tmp.line = startingLine;
-            System.out.println(startingLine+" : "+tmp.startingByte);
+            tmp.line = lineCpt;
+            tmp.startingByte = byteCpt;
+            //System.out.println(tmp.line+" : "+tmp.startingByte);
             String line = "";
             int blankLineCpt = 0;
             do{
-              if()tmp.startingByte = in.getChannel().position();
               line = reader.readLine();
               if(line != null){
                 if(line.startsWith("[Event")){
@@ -163,6 +163,7 @@ public class DBReader{
                 }
               }
               lineCpt++;
+              byteCpt += line.getBytes().length+1;
             }while(blankLineCpt < 2);
             cpt++;
             extractPlayerData(playersHashtable,tmp);
