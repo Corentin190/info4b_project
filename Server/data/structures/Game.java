@@ -26,6 +26,7 @@ public class Game{
       int blankLineCpt = 0;
       do{
         String lineContent = reader.readLine();
+        System.out.println(lineContent);
         if(lineContent != null){
           if(lineContent.startsWith("[Event")){
             this.type = lineContent.substring(8,lineContent.length()-2);

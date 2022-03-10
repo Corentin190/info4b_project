@@ -23,9 +23,19 @@ public class DBReader{
     try{
       if(!playerDataFile.exists())playerDataFile.createNewFile();
       FileOutputStream out = new FileOutputStream(playerDataFile);
-      ObjectOutputStream oout = new ObjectOutputStream(out);
-      oout.writeObject(playersHashtable);
-      oout.close();
+      OutputStreamWriter writer = new OutputStreamWriter(out);
+      Enumeration<String> keys = playersHashtable.keys();
+      int cpt = 0;
+      while(keys.hasMoreElements()){
+        String key = keys.nextElement();
+        writer.write("[Pseudo \""+key+"\"]\n");
+        ArrayList<Integer> value = playersHashtable.get(key);
+        for(int i=0;value != null && i<value.size();i++){
+          writer.write(value.get(i)+" ");
+        }
+        writer.write("\n[End \""+key+"\"]\n");
+      }
+      writer.close();
       out.close();
     }catch(IOException e){
       e.printStackTrace();
