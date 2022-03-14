@@ -14,14 +14,30 @@ public class MostActiveSearcher{
     this.mostActivePlayers = new String[nbMostActive];
   }
 
-  public void sort(){
-    String[] topPlayers = new String[nbMostActive];
+  private void sort(){
+    List<String> keyList = new ArrayList<String>();
     Enumeration<String> keys = playersGamesList.keys();
     while(keys.hasMoreElements()){
-      String key = keys.nextElement();
-      for(int i=0;i<topPlayers.length;i++){
+      keyList.add(keys.nextElement());
+    }
 
+    //============= DEBUT TRI =============
+    System.out.println("Sorting array");
+    for(int i=0;i<keyList.size();i++){
+      for(int j=0;j<keyList.size()-i-1;j++){
+        System.out.println(i+"/"+keyList.size()+" : "+j+"/"+keyList.size());
+        if(playersGamesList.get(keyList.get(j))>playersGamesList.get(keyList.get(j+1))){
+          String tmp = keyList.get(j);
+          keyList.set(j,keyList.get(j+1));
+          keyList.set(j+1,tmp);
+        }
       }
+    }
+
+    //============== FIN TRI ==============
+
+    for(int i=0;i<mostActivePlayers.length;i++){
+      mostActivePlayers[i] = keyList.get(i);
     }
   }
 
@@ -57,5 +73,6 @@ public class MostActiveSearcher{
     }catch(IOException e) {
       e.printStackTrace();
     }
+    sort();
   }
 }
