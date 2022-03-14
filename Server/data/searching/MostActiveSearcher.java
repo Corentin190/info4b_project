@@ -5,16 +5,18 @@ import java.util.*;
 
 public class MostActiveSearcher{
   private int nbMostActive;
-  public Hashtable<String,Integer> mostActiveList;
+  public Hashtable<String,Integer> playersGamesList;
+  public String[] mostActivePlayers;
 
   public MostActiveSearcher(int nbMostActive){
     this.nbMostActive = nbMostActive;
-    this.mostActiveList = new Hashtable<String,Integer>();
+    this.playersGamesList = new Hashtable<String,Integer>();
+    this.mostActivePlayers = new String[nbMostActive];
   }
 
   public void sort(){
     String[] topPlayers = new String[nbMostActive];
-    Enumeration<String> keys = mostActiveList.keys();
+    Enumeration<String> keys = playersGamesList.keys();
     while(keys.hasMoreElements()){
       String key = keys.nextElement();
       for(int i=0;i<topPlayers.length;i++){
@@ -37,16 +39,16 @@ public class MostActiveSearcher{
             line = reader.readLine();
             if(line.startsWith("[Pseudo ")){
               String playerNickname = line.substring(9,line.length()-2);
-              if(this.mostActiveList.containsKey(playerNickname)){
+              if(this.playersGamesList.containsKey(playerNickname)){
                 do{
                   line = reader.readLine();
                 }while(!line.startsWith("[NumberOfGame "));
-                this.mostActiveList.put(playerNickname,this.mostActiveList.get(playerNickname)+Integer.parseInt(line.substring(14,line.length()-1)));
+                this.playersGamesList.put(playerNickname,this.playersGamesList.get(playerNickname)+Integer.parseInt(line.substring(14,line.length()-1)));
               }else{
                 do{
                   line = reader.readLine();
                 }while(!line.startsWith("[NumberOfGame "));
-                this.mostActiveList.put(playerNickname,Integer.parseInt(line.substring(14,line.length()-1)));
+                this.playersGamesList.put(playerNickname,Integer.parseInt(line.substring(14,line.length()-1)));
               }
             }
           }
