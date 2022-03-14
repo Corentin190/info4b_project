@@ -21,23 +21,16 @@ public class MostActiveSearcher{
       keyList.add(keys.nextElement());
     }
 
-    //============= DEBUT TRI =============
-    System.out.println("Sorting array");
-    for(int i=0;i<keyList.size();i++){
-      for(int j=0;j<keyList.size()-i-1;j++){
-        System.out.println(i+"/"+keyList.size()+" : "+j+"/"+keyList.size());
-        if(playersGamesList.get(keyList.get(j))>playersGamesList.get(keyList.get(j+1))){
-          String tmp = keyList.get(j);
-          keyList.set(j,keyList.get(j+1));
-          keyList.set(j+1,tmp);
-        }
-      }
-    }
-
-    //============== FIN TRI ==============
+    //thanks https://stackoverflow.com/questions/5176771/sort-hashtable-by-values
+    ArrayList<Map.Entry<String, Integer>> l = new ArrayList(playersGamesList.entrySet());
+    Collections.sort(l, new Comparator<Map.Entry<String, Integer>>(){
+    public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2){
+      return o2.getValue().compareTo(o1.getValue());
+    }});
+    //much thanks, such wow
 
     for(int i=0;i<mostActivePlayers.length;i++){
-      mostActivePlayers[i] = keyList.get(i);
+      mostActivePlayers[i] = l.get(i).getKey();
     }
   }
 
