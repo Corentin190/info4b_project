@@ -58,11 +58,10 @@ public class DBReader{
 
   public static void displayTopOpening(Hashtable<String,Integer> openingHashtable, int top) {
     //display top opening
-    Hashtable<String,Integer> localHashtable = openingHashtable;
+    Hashtable<String,Integer> localHashtable = (Hashtable<String,Integer>)openingHashtable.clone();
     ArrayList<String> listKeys = Collections.list(localHashtable.keys());
     String topOpening=listKeys.get((int)Math.random()*listKeys.size());
     Set keys = localHashtable.keySet();
-    Iterator itr = keys.iterator();
     if(top==1)
     System.out.println("============================\nThe most used opening is:");
     else if(top>1)
@@ -87,7 +86,6 @@ public class DBReader{
     ArrayList<String> listKeys = Collections.list(playersHashtable.keys());
     String activePlayer=listKeys.get((int)Math.random()*listKeys.size());
     Set keys = playersHashtable.keySet();
-    Iterator itr = keys.iterator();
     if(top==1)
     System.out.println("============================\nThe most active player is:");
     else if(top>1)

@@ -14,6 +14,10 @@ public class Game{
   public int line;
   public long startingByte;
 
+  public static Game[] createFromFile(String file, long startingByte){
+    return null;
+  }
+
   public Game(){
     moves = new ArrayList<String>();
   }
