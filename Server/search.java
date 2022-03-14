@@ -10,7 +10,7 @@ public class search{
     if(playerGames!=null && playerGames.length>0){
       System.out.println(playerGames.length+" games found");
       for(int i=0;i<playerGames.length;i++){
-        System.out.println(playerGames[i].toString());
+        //System.out.println(playerGames[i].toString());
       }
     }else System.out.println("No game found for this nickname");
   }
