@@ -5,7 +5,7 @@ import data.searching.*;
 
 public class search{
   public static void main(String args[]){
-    PlayerGamesSearcher searcher = new PlayerGamesSearcher("F1_ALONSO_FERRARI");
+    PlayerGamesSearcher searcher = new PlayerGamesSearcher("amir51");
     Game[] playerGames = searcher.load();
     if(playerGames!=null && playerGames.length>0){
       System.out.println(playerGames.length+" games found");

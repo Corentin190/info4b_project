@@ -31,12 +31,14 @@ public class PlayerGamesSearcher{
             if(line.equals("[Pseudo \""+this.playerName+"\"]"))found = true;
           }
           if(found){
+            System.out.println(this.playerName+" found !");
             line = reader.readLine();
             StringTokenizer tokenizer = new StringTokenizer(line);
+            String pgnFile = root.list()[i].substring(0,root.list()[i].length()-16)+".pgn";
             while(tokenizer.hasMoreTokens()){
               long startingByte = Long.parseLong(tokenizer.nextToken());
               //System.out.println(startingByte);
-              playerGames.add(new Game(root.list()[i].substring(0,root.list()[i].length()-16)+".pgn",startingByte));
+              playerGames.add(new Game(pgnFile,startingByte));
             }
           }
           System.out.println((playerGames.size()-cpt)+" games found");
