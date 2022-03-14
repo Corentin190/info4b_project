@@ -35,10 +35,20 @@ public class PlayerGamesSearcher{
             line = reader.readLine();
             StringTokenizer tokenizer = new StringTokenizer(line);
             String pgnFile = root.list()[i].substring(0,root.list()[i].length()-16)+".pgn";
+            ArrayList<Long> startingBytes = new ArrayList<Long>();
             while(tokenizer.hasMoreTokens()){
               long startingByte = Long.parseLong(tokenizer.nextToken());
+              startingBytes.add(startingByte);
               //System.out.println(startingByte);
-              playerGames.add(new Game(pgnFile,startingByte));
+              //playerGames.add(new Game(pgnFile,startingByte));
+            }
+            long[] tab = new long[startingBytes.size()];
+            for(int j=0;j<startingBytes.size();j++){
+              tab[j] = startingBytes.get(j);
+            }
+            Game[] gamesTab = Game.createFromFile(pgnFile,tab);
+            for(int j=0;j<startingBytes.size();j++){
+              playerGames.add(gamesTab[j]);
             }
           }
           System.out.println((playerGames.size()-cpt)+" games found");

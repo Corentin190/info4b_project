@@ -14,8 +14,49 @@ public class Game{
   public int line;
   public long startingByte;
 
-  public static Game[] createFromFile(String file, long startingByte){
-    return null;
+  public static Game[] createFromFile(String file, long[] startingBytes){
+    Game[] games = new Game[startingBytes.length];
+    try {
+      FileInputStream in = new FileInputStream("Src/"+file);
+      for(int i=0;i<games.length;i++){
+        if(i<1)in.skip(startingBytes[i]);
+        else in.skip(startingBytes[i]-in.getChannel().position());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        int blankLineCpt = 0;
+        games[i] = new Game();
+        do{
+          String lineContent = reader.readLine();
+          //System.out.println(lineContent);
+          if(lineContent != null){
+            if(lineContent.startsWith("[Event")){
+              games[i].type = lineContent.substring(8,lineContent.length()-2);
+            }
+            if(lineContent.startsWith("[Site")){
+              games[i].url = lineContent.substring(7,lineContent.length()-2);
+            }
+            if(lineContent.startsWith("[White ")){
+              games[i].whitePlayer = lineContent.substring(8,lineContent.length()-2);
+            }
+            if(lineContent.startsWith("[Black ")){
+              games[i].blackPlayer = lineContent.substring(8,lineContent.length()-2);
+            }
+            if(lineContent.startsWith("[Result")){
+              games[i].result = lineContent.substring(9,lineContent.length()-2);
+            }
+            if(lineContent.startsWith("[Opening")){
+              games[i].opening = lineContent.substring(10,lineContent.length()-2);
+            }
+            if(lineContent.equals("")){
+              blankLineCpt++;
+            }
+          }
+        }while(blankLineCpt < 2);
+      }
+      in.close();
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+    return games;
   }
 
   public Game(){
