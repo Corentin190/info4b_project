@@ -4,6 +4,12 @@ import data.structures.*;
 import data.searching.*;
 
 public class DBReader{
+
+  /*
+  Fonction récupérant depuis une instance de Game le nom du joueur noir, le nom du joueur blanc.
+  Elle associe à ces noms l'octet de départ de la partie dans le fichier pgn afin de la retrouver plus rapidement lors d'une requête sur le serveur.
+  */
+
   public static void extractPlayerData(Hashtable<String,ArrayList<Long>> playersHashtable, Game game){
     if(playersHashtable.containsKey(game.blackPlayer)) {
       playersHashtable.get(game.blackPlayer).add(game.startingByte);
@@ -19,13 +25,24 @@ public class DBReader{
     }
   }
 
+  /*
+  Fonction écrivant les données des joueurs dans un fichier au format "lichess_db_standard_rated_AAAA-MM_player_data.dat".
+  Les données sont passées en paramètre avec la Hashtable playersHashtable.
+  Les données sont enregistrées au format suivant :
+  [Pseudo "2girls1cup"]
+  octet_partie_1 octet_partie_2 octet_partie_3 octet_partie_4 octet_partie_5
+  [NumberOfGame 5]
+  */
+
   public static void savePlayerData(File playerDataFile, Hashtable<String,ArrayList<Long>> playersHashtable){
     try{
       if(!playerDataFile.exists())playerDataFile.createNewFile();
+
       FileOutputStream out = new FileOutputStream(playerDataFile);
       OutputStreamWriter writer = new OutputStreamWriter(out);
       Enumeration<String> keys = playersHashtable.keys();
-      int cpt = 0;
+
+      //écriture de chaque joueur dans le fichier tant que l'énumération dispose de clé.
       while(keys.hasMoreElements()){
         String key = keys.nextElement();
         writer.write("[Pseudo \""+key+"\"]\n");
@@ -36,11 +53,18 @@ public class DBReader{
         writer.write("\n[NumberOfGame "+value.size()+"]\n");
       }
       writer.close();
-      out.close();
+
     }catch(IOException e){
       e.printStackTrace();
     }
   }
+
+  /*
+  Fonction écrivant les données concernant les ouvertures dans un fichier au format "lichess_db_standard_rated_AAAA-MM_opening_data.dat".
+  Les données sont enregistrées au format suivant :
+  [Ouverture "openning_name"]
+  [NumberOfOccurence 1337]
+  */
 
   public static void extractOpeningIteration(Hashtable<String,Integer> openingHashtable, Game game) {
     if(openingHashtable.containsKey(game.opening)){
@@ -50,14 +74,11 @@ public class DBReader{
     }
   }
 
-  public static void displayOpeningIteration(Hashtable<String,Integer> openingHashtable) {
-    openingHashtable.forEach((key, value) -> {
-      System.out.println("Opening: "+key+" & Iterations: "+value);
-    });
-  }
+  /*
+  Fonction à transposer côté serveur une fois la fonction extractOpeningIteration() finie
+  */
 
   public static void displayTopOpening(Hashtable<String,Integer> openingHashtable, int top) {
-    //display top opening
     Hashtable<String,Integer> localHashtable = (Hashtable<String,Integer>)openingHashtable.clone();
     ArrayList<String> listKeys = Collections.list(localHashtable.keys());
     String topOpening=listKeys.get((int)Math.random()*listKeys.size());
@@ -79,32 +100,6 @@ public class DBReader{
       System.out.println("Top "+i+" opening :: "+topOpening+" with "+localHashtable.get(topOpening)+" iterations.");
       listKeys.remove(topOpening);
       topOpening=listKeys.get((int)Math.random()*listKeys.size());
-    }
-  }
-
-  public static void extractActivePlayers(Hashtable<String,ArrayList<Long>> playersHashtable, int top) {
-    ArrayList<String> listKeys = Collections.list(playersHashtable.keys());
-    String activePlayer=listKeys.get((int)Math.random()*listKeys.size());
-    Set keys = playersHashtable.keySet();
-    if(top==1)
-    System.out.println("============================\nThe most active player is:");
-    else if(top>1)
-    System.out.println("============================\nThe most active players are:");
-    else if(top<1) {
-      System.out.println("============================\nYou have entered an invalid number, we will consider as a '1'.");
-      top=1;
-    }
-    for(int i=1;i<=top;i++) {
-      for(int j=0;j<listKeys.size();j++) {
-        //System.out.println(playersHashtable.get(listKeys.get(j)).size());
-        if(playersHashtable.get(listKeys.get(j)).size()>playersHashtable.get(activePlayer).size()) {
-          activePlayer=listKeys.get(j);
-        }
-        //System.out.println(playersHashtable.get(listKeys.get(j)));
-      }
-      System.out.println(i+". "+activePlayer+" with "+playersHashtable.get(activePlayer).size()+" games.");
-      listKeys.remove(activePlayer);
-      activePlayer=listKeys.get((int)Math.random()*listKeys.size());
     }
   }
 
@@ -132,7 +127,6 @@ public class DBReader{
             Game tmp = new Game();
             tmp.line = lineCpt;
             tmp.startingByte = byteCpt;
-            //System.out.println(tmp.line+" : "+tmp.startingByte);
             String line = "";
             int blankLineCpt = 0;
             do{
@@ -175,9 +169,6 @@ public class DBReader{
           //================================ Print de debug ================================
           System.out.println("==> "+cpt+" Games read");
           System.out.println("==> "+playersHashtable.size()+" Players saved");
-          //  displayOpeningIteration(openingHashtable);
-          // displayTopOpening(openingHashtable,0);
-          // extractActivePlayers(playersHashtable,0);
           overall_cpt += cpt;
         }
       }

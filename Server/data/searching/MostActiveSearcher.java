@@ -61,6 +61,8 @@ public class MostActiveSearcher{
               }
             }
           }
+          reader.close();
+          in.close();
         }
       }
     }catch(IOException e) {
