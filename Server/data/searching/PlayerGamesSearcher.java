@@ -16,10 +16,20 @@ public class PlayerGamesSearcher{
   public Game[] load(){
     try{
       File root = new File("Src/");
+
+      /*
+      Parcours de tous les fichiers et traitement des fichiers XXXXXX_player_data.dat
+      */
+
       for(int i=0;i<root.list().length;i++){
         if(root.list()[i].endsWith("_player_data.dat")){
           int cpt = playerGames.size();
           System.out.println("======= Reading "+root.list()[i]+"=======");
+
+          /*
+          Création du lecteur pour la lecture du fichier et recherche du joueur.
+          */
+
           FileInputStream in = new FileInputStream("Src/"+root.list()[i]);
           System.out.println("Reading content");
           BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -32,6 +42,12 @@ public class PlayerGamesSearcher{
           }
           if(found){
             System.out.println(this.playerName+" found !");
+
+            /*
+            Lecture de la ligne contenant tous les octets de départ des parties du joueur trouvé.
+            Ajout de chaque octet de départ dans une ArrayList et extraction de toutes les parties.
+            */
+
             line = reader.readLine();
             StringTokenizer tokenizer = new StringTokenizer(line);
             String pgnFile = root.list()[i].substring(0,root.list()[i].length()-16)+".pgn";
@@ -39,8 +55,6 @@ public class PlayerGamesSearcher{
             while(tokenizer.hasMoreTokens()){
               long startingByte = Long.parseLong(tokenizer.nextToken());
               startingBytes.add(startingByte);
-              //System.out.println(startingByte);
-              //playerGames.add(new Game(pgnFile,startingByte));
             }
             long[] tab = new long[startingBytes.size()];
             for(int j=0;j<startingBytes.size();j++){
