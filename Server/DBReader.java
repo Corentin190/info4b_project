@@ -107,13 +107,27 @@ public class DBReader{
     int overall_cpt = 0;
     try{
       File folder = new File("Src/");
+
+      /*
+      Lecture de tous les fichiers contenus dans le dossier "Src/" et stockage de leur chemin dans une ArrayList.
+      */
+
       ArrayList<String> fileFolder = new ArrayList<>();
       for(int i=0;i<folder.list().length;i++){
         fileFolder.add(folder.list()[i]);
       }
+
+      /*
+      Traitement de chaque fichier .pgn
+      */
+
       for(int i=0;i<fileFolder.size();i++){
         String dataFile = fileFolder.get(i);
         if(dataFile.endsWith(".pgn")){
+          /*
+          Création d'un fichier .dat correspondant aux données des joueurs.
+          Création d'un lecteur permettant de lire le fichier .pgn et des Hashtable permettant le stockage temporaire des données traitées.
+          */
           String playersDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_player_data.dat";
           FileInputStream in = new FileInputStream("Src/"+dataFile);
           BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -129,6 +143,13 @@ public class DBReader{
             tmp.startingByte = byteCpt;
             String line = "";
             int blankLineCpt = 0;
+
+            /*
+            La section suivante lit ligne par ligne tant qu'elle ne rencontre pas 2 lignes blanches.
+            Lorsque 2 lignes blanches ont été lues, une partie entière a été lue.
+            Chaque ligne lue est traitée afin d'en extraire les informations et les stocker dans une instance de Game.
+            */
+
             do{
               line = reader.readLine();
               if(line != null){
@@ -162,6 +183,11 @@ public class DBReader{
             extractOpeningIteration(openingHashtable,tmp);
           }while(reader.ready());
           System.out.println("Saving data as "+playersDataFile);
+
+          /*
+          Fermeture du lecteur et sauvegarde des données traitées.
+          */
+
           File output = new File(playersDataFile);
           savePlayerData(output,playersHashtable);
           reader.close();
