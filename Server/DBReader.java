@@ -63,7 +63,7 @@ public class DBReader{
   Fonction écrivant les données concernant les ouvertures dans un fichier au format "lichess_db_standard_rated_AAAA-MM_opening_data.dat".
   Les données sont enregistrées au format suivant :
   [Ouverture "openning_name"]
-  [NumberOfOccurence 1337]
+  [NumberOfOccurence "1337"]
   */
 
   public static void extractOpeningIteration(Hashtable<String,Integer> openingHashtable, Game game) {
@@ -71,6 +71,23 @@ public class DBReader{
       openingHashtable.put(game.opening,openingHashtable.get(game.opening)+1);
     }else{
       openingHashtable.put(game.opening,1);
+    }
+  }
+
+  public static void saveOpeningData(File openingDataFile, Hashtable<String,Integer> openingHashtable){
+    try{
+      if(!openingDataFile.exists())openingDataFile.createNewFile();
+      FileOutputStream out = new FileOutputStream(openingDataFile);
+      OutputStreamWriter writer = new OutputStreamWriter(out);
+      Enumeration<String> keys = openingHashtable.keys();
+      while(keys.hasMoreElements()){
+        String key = keys.nextElement();
+        writer.write("[Opening \""+key+"\"]\n");
+        writer.write("[NumberOfOccurence \""+openingHashtable.get(key)+"\"]\n");
+      }
+      writer.close();
+    }catch(IOException e){
+      e.printStackTrace();
     }
   }
 
@@ -129,6 +146,7 @@ public class DBReader{
           Création d'un lecteur permettant de lire le fichier .pgn et des Hashtable permettant le stockage temporaire des données traitées.
           */
           String playersDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_player_data.dat";
+          String openingDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_opening_data.dat";
           FileInputStream in = new FileInputStream("Src/"+dataFile);
           BufferedReader reader = new BufferedReader(new InputStreamReader(in));
           Hashtable<String,Integer> openingHashtable = new Hashtable<String,Integer>();
@@ -188,8 +206,11 @@ public class DBReader{
           Fermeture du lecteur et sauvegarde des données traitées.
           */
 
-          File output = new File(playersDataFile);
-          savePlayerData(output,playersHashtable);
+          File outputPlayerData = new File(playersDataFile);
+          File outputOpeningData = new File(openingDataFile);
+          savePlayerData(outputPlayerData,playersHashtable);
+          System.out.println("Saving data as "+openingDataFile);
+          saveOpeningData(outputOpeningData,openingHashtable);
           reader.close();
           in.close();
           //================================ Print de debug ================================
