@@ -44,6 +44,7 @@ public class PlayerGamesSearcher{
           if(found){
             System.out.println(this.playerName+" found ! ("+(System.currentTimeMillis()-previousTime)+"ms)");
             previousTime = System.currentTimeMillis();
+            
             /*
             Lecture de la ligne contenant tous les octets de départ des parties du joueur trouvé.
             Ajout de chaque octet de départ dans une ArrayList et extraction de toutes les parties.

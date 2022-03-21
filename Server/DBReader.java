@@ -91,6 +91,26 @@ public class DBReader{
     }
   }
 
+  public static void extractUrl(Hashtable<String,Long> urlHashtable, Game game) {
+    urlHashtable.put(game.url,game.startingByte);
+  }
+
+  public static void saveUrlIndex(File urlIndexFile, Hashtable<String,Long> urlHashtable){
+    try{
+      if(!urlIndexFile.exists())urlIndexFile.createNewFile();
+      FileOutputStream out = new FileOutputStream(urlIndexFile);
+      OutputStreamWriter writer = new OutputStreamWriter(out);
+      Enumeration<String> keys = urlHashtable.keys();
+      while(keys.hasMoreElements()){
+        String key = keys.nextElement();
+        writer.write("[Url \""+key+"\" : "+urlHashtable.get(key)+"]\n");
+      }
+      writer.close();
+    }catch(IOException e){
+      e.printStackTrace();
+    }
+  }
+
   /*
   Fonction à transposer côté serveur une fois la fonction extractOpeningIteration() finie
   */
@@ -147,10 +167,12 @@ public class DBReader{
           */
           String playersDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_player_data.dat";
           String openingDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_opening_data.dat";
+          String urlIndexFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_url_index.dat";
           FileInputStream in = new FileInputStream("Src/"+dataFile);
           BufferedReader reader = new BufferedReader(new InputStreamReader(in));
           Hashtable<String,Integer> openingHashtable = new Hashtable<String,Integer>();
           Hashtable<String,ArrayList<Long>> playersHashtable = new Hashtable<String,ArrayList<Long>>();
+          Hashtable<String,Long> urlHashtable = new Hashtable<String,Long>();
           int cpt = 0;
           int lineCpt = 0;
           int byteCpt = 0;
@@ -199,8 +221,8 @@ public class DBReader{
             cpt++;
             extractPlayerData(playersHashtable,tmp);
             extractOpeningIteration(openingHashtable,tmp);
+            extractUrl(urlHashtable,tmp);
           }while(reader.ready());
-          System.out.println("Saving data as "+playersDataFile);
 
           /*
           Fermeture du lecteur et sauvegarde des données traitées.
@@ -208,9 +230,13 @@ public class DBReader{
 
           File outputPlayerData = new File(playersDataFile);
           File outputOpeningData = new File(openingDataFile);
+          File outputUrlIndex = new File(urlIndexFile);
+          System.out.println("Saving data as "+playersDataFile);
           savePlayerData(outputPlayerData,playersHashtable);
           System.out.println("Saving data as "+openingDataFile);
           saveOpeningData(outputOpeningData,openingHashtable);
+          System.out.println("Saving data as "+urlIndexFile);
+          saveUrlIndex(outputUrlIndex,urlHashtable);
           reader.close();
           in.close();
           //================================ Print de debug ================================
