@@ -139,81 +139,86 @@ public class DBReader{
           String playersDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_player_data.dat";
           String openingDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_opening_data.dat";
           String urlIndexFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_url_index.dat";
-          FileInputStream in = new FileInputStream("Src/"+dataFile);
-          BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-          Hashtable<String,Integer> openingHashtable = new Hashtable<String,Integer>();
-          Hashtable<String,ArrayList<Long>> playersHashtable = new Hashtable<String,ArrayList<Long>>();
-          Hashtable<String,Long> urlHashtable = new Hashtable<String,Long>();
-          int cpt = 0;
-          int lineCpt = 0;
-          long byteCpt = 0;
-          System.out.println("Processing "+dataFile);
-          do{
-            Game tmp = new Game();
-            tmp.line = lineCpt;
-            tmp.startingByte = byteCpt;
-            String line = "";
-            int blankLineCpt = 0;
-
-            /*
-            La section suivante lit ligne par ligne tant qu'elle ne rencontre pas 2 lignes blanches.
-            Lorsque 2 lignes blanches ont été lues, une partie entière a été lue.
-            Chaque ligne lue est traitée afin d'en extraire les informations et les stocker dans une instance de Game.
-            */
-
-            do{
-              line = reader.readLine();
-              if(line != null){
-                if(line.startsWith("[Event")){
-                  tmp.type = line.substring(8,line.length()-2);
-                }
-                if(line.startsWith("[Site")){
-                  tmp.url = line.substring(7,line.length()-2);
-                }
-                if(line.startsWith("[White ")){
-                  tmp.whitePlayer = line.substring(8,line.length()-2);
-                }
-                if(line.startsWith("[Black ")){
-                  tmp.blackPlayer = line.substring(8,line.length()-2);
-                }
-                if(line.startsWith("[Result")){
-                  tmp.result = line.substring(9,line.length()-2);
-                }
-                if(line.startsWith("[Opening")){
-                  tmp.opening = line.substring(10,line.length()-2);
-                }
-                if(line.equals("")){
-                  blankLineCpt++;
-                }
-              }
-              lineCpt++;
-              byteCpt += line.getBytes().length+1;
-            }while(blankLineCpt < 2);
-            cpt++;
-            extractPlayerData(playersHashtable,tmp);
-            extractOpeningIteration(openingHashtable,tmp);
-            extractUrl(urlHashtable,tmp);
-          }while(reader.ready());
-
-          /*
-          Fermeture du lecteur et sauvegarde des données traitées.
-          */
 
           File outputPlayerData = new File(playersDataFile);
           File outputOpeningData = new File(openingDataFile);
           File outputUrlIndex = new File(urlIndexFile);
-          System.out.println("Saving data as "+playersDataFile);
-          savePlayerData(outputPlayerData,playersHashtable);
-          System.out.println("Saving data as "+openingDataFile);
-          saveOpeningData(outputOpeningData,openingHashtable);
-          System.out.println("Saving data as "+urlIndexFile);
-          saveUrlIndex(outputUrlIndex,urlHashtable);
-          reader.close();
-          in.close();
-          //================================ Print de debug ================================
-          System.out.println("==> "+cpt+" Games read");
-          System.out.println("==> "+playersHashtable.size()+" Players saved");
-          overall_cpt += cpt;
+
+          if(!outputPlayerData.exists() || !outputOpeningData.exists() || !outputUrlIndex.exists()){
+
+            FileInputStream in = new FileInputStream("Src/"+dataFile);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            Hashtable<String,Integer> openingHashtable = new Hashtable<String,Integer>();
+            Hashtable<String,ArrayList<Long>> playersHashtable = new Hashtable<String,ArrayList<Long>>();
+            Hashtable<String,Long> urlHashtable = new Hashtable<String,Long>();
+            int cpt = 0;
+            int lineCpt = 0;
+            long byteCpt = 0;
+            System.out.println("Processing "+dataFile);
+            do{
+              Game tmp = new Game();
+              tmp.line = lineCpt;
+              tmp.startingByte = byteCpt;
+              String line = "";
+              int blankLineCpt = 0;
+
+              /*
+              La section suivante lit ligne par ligne tant qu'elle ne rencontre pas 2 lignes blanches.
+              Lorsque 2 lignes blanches ont été lues, une partie entière a été lue.
+              Chaque ligne lue est traitée afin d'en extraire les informations et les stocker dans une instance de Game.
+              */
+
+              do{
+                line = reader.readLine();
+                if(line != null){
+                  if(line.startsWith("[Event")){
+                    tmp.type = line.substring(8,line.length()-2);
+                  }
+                  if(line.startsWith("[Site")){
+                    tmp.url = line.substring(7,line.length()-2);
+                  }
+                  if(line.startsWith("[White ")){
+                    tmp.whitePlayer = line.substring(8,line.length()-2);
+                  }
+                  if(line.startsWith("[Black ")){
+                    tmp.blackPlayer = line.substring(8,line.length()-2);
+                  }
+                  if(line.startsWith("[Result")){
+                    tmp.result = line.substring(9,line.length()-2);
+                  }
+                  if(line.startsWith("[Opening")){
+                    tmp.opening = line.substring(10,line.length()-2);
+                  }
+                  if(line.equals("")){
+                    blankLineCpt++;
+                  }
+                }
+                lineCpt++;
+                byteCpt += line.getBytes().length+1;
+              }while(blankLineCpt < 2);
+              cpt++;
+              extractPlayerData(playersHashtable,tmp);
+              extractOpeningIteration(openingHashtable,tmp);
+              extractUrl(urlHashtable,tmp);
+            }while(reader.ready());
+
+            /*
+            Fermeture du lecteur et sauvegarde des données traitées.
+            */
+
+            System.out.println("Saving data as "+playersDataFile);
+            savePlayerData(outputPlayerData,playersHashtable);
+            System.out.println("Saving data as "+openingDataFile);
+            saveOpeningData(outputOpeningData,openingHashtable);
+            System.out.println("Saving data as "+urlIndexFile);
+            saveUrlIndex(outputUrlIndex,urlHashtable);
+            reader.close();
+            in.close();
+            //================================ Print de debug ================================
+            System.out.println("==> "+cpt+" Games read");
+            System.out.println("==> "+playersHashtable.size()+" Players saved");
+            overall_cpt += cpt;
+          }
         }
       }
       System.out.println("\n\n==> "+overall_cpt+" Games read across all files");
