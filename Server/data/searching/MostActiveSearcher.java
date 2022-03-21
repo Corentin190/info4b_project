@@ -81,7 +81,7 @@ public class MostActiveSearcher{
               }
             }
           }
-          System.out.println("Time to read file : ("+(System.currentTimeMillis()-previousTime)+")");
+          System.out.println("Time to read file : "+(System.currentTimeMillis()-previousTime)+"ms");
           reader.close();
           in.close();
         }
