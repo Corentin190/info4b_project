@@ -14,7 +14,6 @@ public class GameCount {
 	      for(int i=0;i<folder.list().length;i++){
 	        fileFolder.add(folder.list()[i]);
 	      }
-	      
 	      for(int i=0;i<fileFolder.size();i++){
 	        String dataFile = fileFolder.get(i);
 	        if(dataFile.endsWith("_url_index.dat")){
@@ -30,7 +29,7 @@ public class GameCount {
 	          in.close();
 	        }
 	      }
-	      System.out.println(overallCpt);
+	      System.out.format("%,8d games in total\n", overallCpt);
 	    }catch (IOException e){
 	      e.printStackTrace();
 	    }
