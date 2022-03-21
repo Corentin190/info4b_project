@@ -111,35 +111,6 @@ public class DBReader{
     }
   }
 
-  /*
-  Fonction à transposer côté serveur une fois la fonction extractOpeningIteration() finie
-  */
-
-  public static void displayTopOpening(Hashtable<String,Integer> openingHashtable, int top) {
-    Hashtable<String,Integer> localHashtable = (Hashtable<String,Integer>)openingHashtable.clone();
-    ArrayList<String> listKeys = Collections.list(localHashtable.keys());
-    String topOpening=listKeys.get((int)Math.random()*listKeys.size());
-    Set keys = localHashtable.keySet();
-    if(top==1)
-    System.out.println("============================\nThe most used opening is:");
-    else if(top>1)
-    System.out.println("============================\nThe most used openings are:");
-    else if(top<1) {
-      System.out.println("============================\nYou have entered an invalid number, we will consider as a '1'.");
-      top=1;
-    }
-    for(int i=1;i<=top;i++) {
-      for(int j=0;j<listKeys.size();j++) {
-        if(localHashtable.get(listKeys.get(j))>localHashtable.get(topOpening)) {
-          topOpening=listKeys.get(j);
-        }
-      }
-      System.out.println("Top "+i+" opening :: "+topOpening+" with "+localHashtable.get(topOpening)+" iterations.");
-      listKeys.remove(topOpening);
-      topOpening=listKeys.get((int)Math.random()*listKeys.size());
-    }
-  }
-
   public static void main(String[] args) {
     int overall_cpt = 0;
     try{
@@ -175,7 +146,7 @@ public class DBReader{
           Hashtable<String,Long> urlHashtable = new Hashtable<String,Long>();
           int cpt = 0;
           int lineCpt = 0;
-          int byteCpt = 0;
+          long byteCpt = 0;
           System.out.println("Processing "+dataFile);
           do{
             Game tmp = new Game();
