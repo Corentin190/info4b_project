@@ -3,9 +3,7 @@ import java.io.*;
 import data.structures.*;
 import data.searching.*;
 
-public class GameCount {
-
-
+public class GameCount{
 	public static void main(String[] args) {
 		long overallCpt=0;
 		try{
@@ -34,5 +32,4 @@ public class GameCount {
 	      e.printStackTrace();
 	    }
 	}
-
 }
