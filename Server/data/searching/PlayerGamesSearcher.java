@@ -24,6 +24,7 @@ public class PlayerGamesSearcher{
       for(int i=0;i<root.list().length;i++){
         if(root.list()[i].endsWith("_player_data.dat")){
           int cpt = playerGames.size();
+          long previousTime = System.currentTimeMillis();
           System.out.println("======= Reading "+root.list()[i]+"=======");
 
           /*
@@ -41,8 +42,8 @@ public class PlayerGamesSearcher{
             if(line.equals("[Pseudo \""+this.playerName+"\"]"))found = true;
           }
           if(found){
-            System.out.println(this.playerName+" found !");
-
+            System.out.println(this.playerName+" found ! ("+(System.currentTimeMillis()-previousTime)+"ms)");
+            previousTime = System.currentTimeMillis();
             /*
             Lecture de la ligne contenant tous les octets de départ des parties du joueur trouvé.
             Ajout de chaque octet de départ dans une ArrayList et extraction de toutes les parties.
@@ -65,7 +66,8 @@ public class PlayerGamesSearcher{
               playerGames.add(gamesTab[j]);
             }
           }
-          System.out.println((playerGames.size()-cpt)+" games found");
+          System.out.println((playerGames.size()-cpt)+" games found ("+(System.currentTimeMillis()-previousTime)+"ms)");
+          previousTime = System.currentTimeMillis();
           reader.close();
           in.close();
           System.out.println("file closed");

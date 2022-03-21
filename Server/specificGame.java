@@ -18,9 +18,12 @@ public class specificGame{
           FileInputStream in = new FileInputStream("Src/"+dataFile);
           BufferedReader reader = new BufferedReader(new InputStreamReader(in));
           System.out.println("Processing "+dataFile);
+          int moy = 0;
+          int cpt = 0;
           do{
             String line = "";
             int blankLineCpt = 0;
+            long startTime = System.currentTimeMillis();
             do{
               line = reader.readLine();
               if(line != null){
@@ -53,9 +56,14 @@ public class specificGame{
                 }
               }
             }while(blankLineCpt < 2);
+            cpt++;
+            moy += (System.currentTimeMillis()-startTime);
           }while(reader.ready() && !tmp.url.equals(targetUrl));
           reader.close();
           in.close();
+          System.out.println(moy+" ms to read "+cpt+" games");
+          System.out.println("Average read and process time per game : "+((double)moy/cpt)+"ms");
+          if(tmp.url.equals(targetUrl))break;
         }
       }
       if(tmp.url.equals(targetUrl))System.out.println(tmp.toString());

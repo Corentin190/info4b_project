@@ -48,6 +48,7 @@ public class MostActiveSearcher{
 
       for(int i=0;i<root.list().length;i++){
         if(root.list()[i].endsWith("_player_data.dat")){
+          long previousTime = System.currentTimeMillis();
 
           /*
           Création du lecteur pour la lecture du fichier et recherche du joueur.
@@ -80,6 +81,7 @@ public class MostActiveSearcher{
               }
             }
           }
+          System.out.println("Time to read file : ("+(System.currentTimeMillis()-previousTime)+")");
           reader.close();
           in.close();
         }
