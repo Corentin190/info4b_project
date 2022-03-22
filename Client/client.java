@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.*;
 
 public class client {
     public static void main(String args[]) {
@@ -11,7 +12,12 @@ public class client {
             clientSocket.connect(new InetSocketAddress("127.0.0.1",1085));
             output = clientSocket.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
-            writer.println("This is a message sent to the server");
+
+            Scanner sc = new Scanner(System.in);
+            String i = sc.nextLine();
+           // System.out.println(i);
+
+            writer.println(i);
             clientSocket.close();
         }catch (IOException e){
         e.printStackTrace();

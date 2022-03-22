@@ -15,10 +15,19 @@ class clientConnexion extends Thread{
     try{
       InputStreamReader reader = new InputStreamReader(clientSocket.getInputStream());
       int line = 0;
+
+        String received="";
       while(line!=(-1)){
         line = reader.read();
-        if(line!=(-1))System.out.print((char)line);
+        if(line!=(-1)){
+          //System.out.print((char)line);
+          received+=(char)line;
+          //System.out.print(received);
+        }
+        //System.out.println(received);
       }
+      //System.out.println(received);
+      if(received.equals("Corentin\n"))System.out.println("Treating with this parameter");
       sleep(5000);
       System.out.println("Closed connexion with"+clientSocket.getInetAddress());
       clientSocket.close();
