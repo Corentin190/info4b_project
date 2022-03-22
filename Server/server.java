@@ -16,36 +16,58 @@ class clientConnexion extends Thread{
   private void search(String nickname){
     PlayerGamesSearcher searcher = new PlayerGamesSearcher(nickname);
     Game[] playerGames = searcher.load();
-    if(playerGames!=null && playerGames.length>0){
-      System.out.println(playerGames.length+" games found");
-      for(int i=0;i<playerGames.length;i++){
-        //System.out.println(playerGames[i].toString());
-      }
-    }else System.out.println("No game found for this nickname");
     try{
-      clientSocket.getOutputStream().write("Fin de la requête".getBytes());
-    }catch(IOException e){
-      e.printStackTrace();
-    }
+      OutputStream outputStream = clientSocket.getOutputStream();
+      DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+      InputStream inputStream = clientSocket.getInputStream();
+      DataInputStream dataInputStream = new DataInputStream(inputStream);
+
+
+    if(playerGames!=null && playerGames.length>0){
+        dataOutputStream.writeUTF(playerGames.length+" games found\n");
+        dataOutputStream.writeUTF("Do you want to see all games ? (y or whatever)");
+        String answer = dataInputStream.readUTF();
+        if(answer.equals("y")) {
+          for(int i=0;i<playerGames.length;i++){
+            dataOutputStream.writeUTF(playerGames[i].toString());
+          }
+        }else {
+          dataOutputStream.writeUTF("End of communication");
+        }
+    }else dataOutputStream.writeUTF("No game found for this nickname\n");
+      dataOutputStream.writeUTF("Fin de la requête");
+
+      dataOutputStream.writeUTF("End of communication");
+     }catch(IOException e){
+        e.printStackTrace();
+     }
   }
 
   public void run(){
+    
     try{
-      InputStreamReader reader = new InputStreamReader(clientSocket.getInputStream());
-      int line = 0;
+      InputStream inputStream = clientSocket.getInputStream();
+      DataInputStream dataInputStream = new DataInputStream(inputStream);
+      OutputStream outputStream = clientSocket.getOutputStream();
+      DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+      
 
-      String received="";
-      while(line!=(-1)){
-        line = reader.read();
-        if(line!=(-1)){
-          received+=(char)line;
-        }
-      }
-      System.out.println(received);
+      while(!clientSocket.isClosed()) {
+      String received = dataInputStream.readUTF();
+      if(received.equals("exit")) {
+        dataOutputStream.writeUTF("End of communication");
+        System.out.println("Closed connexion with"+clientSocket.getInetAddress());
+        clientSocket.close();
+        clients.remove(this);
+      }else 
       if(received.startsWith("search"))search(received.substring(7,received.length()));
-      System.out.println("Closed connexion with"+clientSocket.getInetAddress());
-      clientSocket.close();
-      clients.remove(this);
+        else {
+        dataOutputStream.writeUTF("try sth else");
+        dataOutputStream.writeUTF("End of communication");
+
+      }
+      received="";
+      }
     }catch(IOException e){
       e.printStackTrace();
     }
