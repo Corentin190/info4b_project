@@ -1,6 +1,8 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import data.searching.*;
+import data.structures.*;
 
 class clientConnexion extends Thread{
   private Socket clientSocket;
@@ -11,30 +13,40 @@ class clientConnexion extends Thread{
     this.clients = clients;
   }
 
+  private void search(String nickname){
+    PlayerGamesSearcher searcher = new PlayerGamesSearcher(nickname);
+    Game[] playerGames = searcher.load();
+    if(playerGames!=null && playerGames.length>0){
+      System.out.println(playerGames.length+" games found");
+      for(int i=0;i<playerGames.length;i++){
+        //System.out.println(playerGames[i].toString());
+      }
+    }else System.out.println("No game found for this nickname");
+    try{
+      clientSocket.getOutputStream().write("Fin de la requête".getBytes());
+    }catch(IOException e){
+      e.printStackTrace();
+    }
+  }
+
   public void run(){
     try{
       InputStreamReader reader = new InputStreamReader(clientSocket.getInputStream());
       int line = 0;
 
-        String received="";
+      String received="";
       while(line!=(-1)){
         line = reader.read();
         if(line!=(-1)){
-          //System.out.print((char)line);
           received+=(char)line;
-          //System.out.print(received);
         }
-        //System.out.println(received);
       }
-      //System.out.println(received);
-      if(received.equals("Corentin\n"))System.out.println("Treating with this parameter");
-      sleep(5000);
+      System.out.println(received);
+      if(received.startsWith("search"))search(received.substring(7,received.length()));
       System.out.println("Closed connexion with"+clientSocket.getInetAddress());
       clientSocket.close();
       clients.remove(this);
     }catch(IOException e){
-      e.printStackTrace();
-    }catch(InterruptedException e) {
       e.printStackTrace();
     }
   }
