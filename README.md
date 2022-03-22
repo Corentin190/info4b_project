@@ -1,4 +1,4 @@
-# info4b_project
+# Info4B Project
 
 How to read a pgn file :
 
