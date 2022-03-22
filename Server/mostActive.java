@@ -10,5 +10,6 @@ public class mostActive{
     for(int i=0;i<searcher.mostActivePlayers.length;i++){
       System.out.println(i+". "+searcher.mostActivePlayers[i]+" - "+searcher.playersGamesList.get(searcher.mostActivePlayers[i]));
     }
+    System.out.println(searcher.playersGamesList.size());
   }
 }
