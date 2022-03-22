@@ -8,7 +8,7 @@ public class client {
         InputStreamReader reader;
         OutputStream output;
         try {
-            clientSocket.connect(new InetSocketAddress("192.168.99.185",1085));
+            clientSocket.connect(new InetSocketAddress("127.0.0.1",1085));
             output = clientSocket.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
             writer.println("This is a message sent to the server");
@@ -16,6 +16,6 @@ public class client {
         }catch (IOException e){
         e.printStackTrace();
     }
-        
+
     }
 }
