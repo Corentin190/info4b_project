@@ -15,10 +15,7 @@ public class client {
       output.write(i.getBytes());
       output.flush();
       System.out.println("Requête envoyée");
-      //scx.start();
-      //System.out.println("InputStreamThread started");
-
-      //clientSocket.close();
+      clientSocket.close();
     }catch (IOException e){
       e.printStackTrace();
     }
