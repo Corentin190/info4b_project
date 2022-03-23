@@ -24,20 +24,53 @@ class clientConnexion extends Thread{
 
 
       if(playerGames!=null && playerGames.length>0){
-        dataOutputStream.writeUTF(playerGames.length+" games found\n");
-        dataOutputStream.writeUTF("Do you want to see all games ? (y or whatever)");
-        String answer = dataInputStream.readUTF();
-        if(answer.equals("y")) {
+        
+        //dataOutputStream.writeUTF("Do you want to see all games ? (y or whatever)");
+        //String answer = dataInputStream.readUTF();
+
           for(int i=0;i<playerGames.length;i++){
+
             dataOutputStream.writeUTF(playerGames[i].toString());
           }
-        }else {
-          dataOutputStream.writeUTF("End of communication");
-        }
+          // String nbGame = ""+playerGames.length;
+          // System.out.println(""+playerGames.length+" games found");
+          // dataOutputStream.writeUTF(nbGame+" games found");
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          dataOutputStream.writeUTF(playerGames.length+" games found");
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////ÇA LA PTN DE SA MERE J'ARRIVE PAS À LE PRINT
+          ///////////////
+          ///////////////LA PTN DE TA RACE ÇA ME CASSE LES COUILLES
+          ///////////////
+          ///////////////D'UN POINT DE VUE EXTERIEUR (POV KEK) JE SUIS SUR QUE TU VAS VOIR INSTANT CE QUI VA PAS
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          ///////////////
+          dataOutputStream.writeUTF("fin");
+          
       }else dataOutputStream.writeUTF("No game found for this nickname\n");
-      dataOutputStream.writeUTF("Fin de la requête");
+      // dataOutputStream.writeUTF("Fin de la requête");
 
-      dataOutputStream.writeUTF("End of communication");
+      // dataOutputStream.writeUTF("End of communication");
     }catch(IOException e){
       e.printStackTrace();
     }
@@ -54,18 +87,7 @@ class clientConnexion extends Thread{
 
       while(!clientSocket.isClosed()) {
         String received = dataInputStream.readUTF();
-        if(received.equals("exit")) {
-          dataOutputStream.writeUTF("End of communication");
-          System.out.println("Closed connexion with"+clientSocket.getInetAddress());
-          clientSocket.close();
-          clients.remove(this);
-        }else
         if(received.startsWith("search"))search(received.substring(7,received.length()));
-        else {
-          dataOutputStream.writeUTF("try sth else");
-          dataOutputStream.writeUTF("End of communication");
-
-        }
         received="";
       }
     }catch(IOException e){
