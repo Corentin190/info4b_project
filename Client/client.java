@@ -21,9 +21,9 @@ public class client {
         scanner = sc.nextLine();
 
         dataOutputStream.writeUTF(scanner);
-        if(scanner.equals("exit"))break;
         System.out.println("Requête envoyée");
-        
+        long clock = System.currentTimeMillis();
+
 
         //clientSocket.close();
         //clientSocket.shutdownOutput();
@@ -31,6 +31,7 @@ public class client {
         String message="";
         while(!message.equals("End of communication")) {
           if(message.startsWith("Do you")) {
+            System.out.println("API response time : "+(System.currentTimeMillis()-clock)+"ms");
             scanner = sc.nextLine();
             dataOutputStream.writeUTF(scanner);
           }
@@ -39,7 +40,7 @@ public class client {
         }
       }
       clientSocket.close();
-      
+
 
 
     }catch (IOException e){

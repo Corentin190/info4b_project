@@ -23,7 +23,7 @@ class clientConnexion extends Thread{
       DataInputStream dataInputStream = new DataInputStream(inputStream);
 
 
-    if(playerGames!=null && playerGames.length>0){
+      if(playerGames!=null && playerGames.length>0){
         dataOutputStream.writeUTF(playerGames.length+" games found\n");
         dataOutputStream.writeUTF("Do you want to see all games ? (y or whatever)");
         String answer = dataInputStream.readUTF();
@@ -34,39 +34,39 @@ class clientConnexion extends Thread{
         }else {
           dataOutputStream.writeUTF("End of communication");
         }
-    }else dataOutputStream.writeUTF("No game found for this nickname\n");
+      }else dataOutputStream.writeUTF("No game found for this nickname\n");
       dataOutputStream.writeUTF("Fin de la requête");
 
       dataOutputStream.writeUTF("End of communication");
-     }catch(IOException e){
-        e.printStackTrace();
-     }
+    }catch(IOException e){
+      e.printStackTrace();
+    }
   }
 
   public void run(){
-    
+
     try{
       InputStream inputStream = clientSocket.getInputStream();
       DataInputStream dataInputStream = new DataInputStream(inputStream);
       OutputStream outputStream = clientSocket.getOutputStream();
       DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-      
+
 
       while(!clientSocket.isClosed()) {
-      String received = dataInputStream.readUTF();
-      if(received.equals("exit")) {
-        dataOutputStream.writeUTF("End of communication");
-        System.out.println("Closed connexion with"+clientSocket.getInetAddress());
-        clientSocket.close();
-        clients.remove(this);
-      }else 
-      if(received.startsWith("search"))search(received.substring(7,received.length()));
+        String received = dataInputStream.readUTF();
+        if(received.equals("exit")) {
+          dataOutputStream.writeUTF("End of communication");
+          System.out.println("Closed connexion with"+clientSocket.getInetAddress());
+          clientSocket.close();
+          clients.remove(this);
+        }else
+        if(received.startsWith("search"))search(received.substring(7,received.length()));
         else {
-        dataOutputStream.writeUTF("try sth else");
-        dataOutputStream.writeUTF("End of communication");
+          dataOutputStream.writeUTF("try sth else");
+          dataOutputStream.writeUTF("End of communication");
 
-      }
-      received="";
+        }
+        received="";
       }
     }catch(IOException e){
       e.printStackTrace();
