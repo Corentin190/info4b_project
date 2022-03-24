@@ -4,7 +4,7 @@ import java.util.*;
 
 public class client {
   public static void main(String args[]) {
-    try {
+    try{
       InputStream inputStream;
       DataInputStream dataInputStream;
       OutputStream outputStream;
@@ -28,9 +28,12 @@ public class client {
           long startTime = System.currentTimeMillis();
           System.out.println("Searching for "+scanner.substring(7,scanner.length()));
           String in = "";
-          String result = "";
-          System.out.println(dataInputStream.readUTF());
-          System.out.println(dataInputStream.readUTF());
+          do{
+            in = dataInputStream.readUTF();
+            if(!in.equals("[METADATA]") && !in.equals("[/METADATA]")){
+              System.out.println(in);
+            }
+          }while(!in.equals("[/METADATA]"));
           System.out.println("API response time : "+(System.currentTimeMillis()-startTime)+" ms");
           System.out.println("Do you want to see the results ? (y or whatever)");
           if(sc.nextLine().equals("y")){
@@ -40,7 +43,6 @@ public class client {
             }while(!in.equals("fin"));
           }
         }
-        clientSocket.close();
       }
     }catch (IOException e){
       e.printStackTrace();

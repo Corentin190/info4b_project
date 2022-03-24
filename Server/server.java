@@ -21,18 +21,15 @@ class clientConnexion extends Thread{
       DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
       InputStream inputStream = clientSocket.getInputStream();
       DataInputStream dataInputStream = new DataInputStream(inputStream);
-
-
       if(playerGames!=null && playerGames.length>0){
-        dataOutputStream.writeUTF("search done");
-        dataOutputStream.writeUTF(playerGames.length+" games found");
+        dataOutputStream.writeUTF("[METADATA]");
+        dataOutputStream.writeUTF(playerGames.length+" games found.");
+        dataOutputStream.writeUTF("[/METADATA]");
         for(int i=0;i<playerGames.length;i++){
           dataOutputStream.writeUTF(playerGames[i].toString());
         }
         dataOutputStream.writeUTF("fin");
-
       }else dataOutputStream.writeUTF("No game found for this nickname\n");
-      clientSocket.close();
     }catch(IOException e){
       e.printStackTrace();
     }
@@ -46,7 +43,6 @@ class clientConnexion extends Thread{
       DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
       String received = dataInputStream.readUTF();
       if(received.startsWith("search"))search(received.substring(7,received.length()));
-      received="";
       System.out.println("Closed connexion with"+clientSocket.getInetAddress());
       clientSocket.close();
       clients.remove(this);
