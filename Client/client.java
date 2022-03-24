@@ -27,7 +27,6 @@ public class client {
           dataOutputStream = new DataOutputStream(outputStream);
           dataOutputStream.writeUTF(scanner);
           System.out.println("Do you want to see the results ? (y or whatever");
-
           if(sc.nextLine().equals("y")) {
             do {
               System.out.println(dataInputStream.readUTF());
