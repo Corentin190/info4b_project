@@ -24,11 +24,11 @@ class clientConnexion extends Thread{
 
 
       if(playerGames!=null && playerGames.length>0){
+        dataOutputStream.writeUTF("search done");
+        dataOutputStream.writeUTF(playerGames.length+" games found");
         for(int i=0;i<playerGames.length;i++){
           dataOutputStream.writeUTF(playerGames[i].toString());
         }
-        String nbGame = ""+playerGames.length;
-        dataOutputStream.writeUTF(nbGame+" games found");
         dataOutputStream.writeUTF("fin");
 
       }else dataOutputStream.writeUTF("No game found for this nickname\n");

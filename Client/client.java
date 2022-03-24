@@ -12,8 +12,7 @@ public class client {
 
       System.out.println("Welcome !\n-------\nIf you are looking for all the game of a player, tap 'search <nickname>'.\nFor example : search 2girls1cup\n-------\nIf you want to quit, tap 'exit'");
       String scanner="";
-      String result="";
-      while(true) {
+      while(true){
         Socket clientSocket = new Socket();
         System.out.println("Enter a command");
         Scanner sc = new Scanner(System.in);
@@ -26,12 +25,19 @@ public class client {
           outputStream = clientSocket.getOutputStream();
           dataOutputStream = new DataOutputStream(outputStream);
           dataOutputStream.writeUTF(scanner);
-          do{
-            result += dataInputStream.readUTF()+"\n";
-          }while(dataInputStream.available()>0);
+          long startTime = System.currentTimeMillis();
+          System.out.println("Searching for "+scanner.substring(7,scanner.length()));
+          String in = "";
+          String result = "";
+          System.out.println(dataInputStream.readUTF());
+          System.out.println(dataInputStream.readUTF());
+          System.out.println("API response time : "+(System.currentTimeMillis()-startTime)+" ms");
           System.out.println("Do you want to see the results ? (y or whatever)");
-          if(sc.nextLine().equals("y")) {
-            System.out.println(result);
+          if(sc.nextLine().equals("y")){
+            do{
+              in = dataInputStream.readUTF();
+              if(!in.equals("fin"))System.out.println(in);
+            }while(!in.equals("fin"));
           }
         }
         clientSocket.close();
