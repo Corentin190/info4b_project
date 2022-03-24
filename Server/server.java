@@ -30,47 +30,21 @@ class clientConnexion extends Thread{
 
           for(int i=0;i<playerGames.length;i++){
 
-            dataOutputStream.writeUTF(playerGames[i].toString());
+            dataOutputStream.writeUTF(playerGames[10].toString());
+       //     dataOutputStream.flush();
+            dataOutputStream.writeUTF("");
+            //dataOutputStream.writeUTF(playerGames.length+" games found");
           }
-          // String nbGame = ""+playerGames.length;
+           String nbGame = ""+playerGames.length;
           // System.out.println(""+playerGames.length+" games found");
-          // dataOutputStream.writeUTF(nbGame+" games found");
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          dataOutputStream.writeUTF(playerGames.length+" games found");
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////ÇA LA PTN DE SA MERE J'ARRIVE PAS À LE PRINT
-          ///////////////
-          ///////////////LA PTN DE TA RACE ÇA ME CASSE LES COUILLES
-          ///////////////
-          ///////////////D'UN POINT DE VUE EXTERIEUR (POV KEK) JE SUIS SUR QUE TU VAS VOIR INSTANT CE QUI VA PAS
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
-          ///////////////
+           dataOutputStream.writeUTF(nbGame+" games found");
           dataOutputStream.writeUTF("fin");
           
       }else dataOutputStream.writeUTF("No game found for this nickname\n");
       // dataOutputStream.writeUTF("Fin de la requête");
 
       // dataOutputStream.writeUTF("End of communication");
+      clientSocket.close();
     }catch(IOException e){
       e.printStackTrace();
     }
@@ -89,6 +63,9 @@ class clientConnexion extends Thread{
         String received = dataInputStream.readUTF();
         if(received.startsWith("search"))search(received.substring(7,received.length()));
         received="";
+        System.out.println("Closed connexion with"+clientSocket.getInetAddress());
+        clientSocket.close();
+        clients.remove(this);
       }
     }catch(IOException e){
       e.printStackTrace();
