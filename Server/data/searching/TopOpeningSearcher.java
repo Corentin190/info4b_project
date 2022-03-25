@@ -40,22 +40,27 @@ public class TopOpeningSearcher{
 
   public void load(){
     try{
-      File root = new File("Src/");
+      File folder = new File("Src/");
+      ArrayList<String> fileFolder = new ArrayList<>();
+      for(int i=0;i<folder.list().length;i++){
+        fileFolder.add(folder.list()[i]);
+      }
+      fileFolder.sort(String::compareToIgnoreCase);
 
       /*
       Parcours de tous les fichiers et traitement des fichiers XXXXXX_opening_data.dat
       */
 
-      for(int i=0;i<root.list().length;i++){
-        if(root.list()[i].endsWith("_opening_data.dat")){
+      for(int i=0;i<fileFolder.size();i++){
+        if(fileFolder.get(i).endsWith("_opening_data.dat")){
           long previousTime = System.currentTimeMillis();
 
           /*
           Création du lecteur pour la lecture du fichier et recherche du joueur.
           */
 
-          System.out.println("======= Reading "+root.list()[i]+"=======");
-          FileInputStream in = new FileInputStream("Src/"+root.list()[i]);
+          System.out.println("======= Reading "+fileFolder.get(i)+"=======");
+          FileInputStream in = new FileInputStream("Src/"+fileFolder.get(i));
           System.out.println("Reading content");
           BufferedReader reader = new BufferedReader(new InputStreamReader(in));
           String line = "";
