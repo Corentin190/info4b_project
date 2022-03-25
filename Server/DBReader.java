@@ -187,6 +187,9 @@ public class DBReader{
                   if(line.startsWith("[Result")){
                     tmp.result = line.substring(9,line.length()-2);
                   }
+                  if(line.startsWith("[UTCDate")){
+                    tmp.result = line.substring(10,line.length()-2);
+                  }
                   if(line.startsWith("[Opening")){
                     tmp.opening = line.substring(10,line.length()-2);
                   }

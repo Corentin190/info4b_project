@@ -26,7 +26,7 @@ class clientConnexion extends Thread{
         dataOutputStream.writeUTF(playerGames.length+" games found.");
         dataOutputStream.writeUTF("[/METADATA]");
         for(int i=0;i<playerGames.length;i++){
-          dataOutputStream.writeUTF(playerGames[i].toString());
+          dataOutputStream.writeUTF(playerGames[playerGames.length-i-1].toString());
         }
         dataOutputStream.writeUTF("fin");
       }else dataOutputStream.writeUTF("No game found for this nickname\n");

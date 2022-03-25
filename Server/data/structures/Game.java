@@ -10,6 +10,7 @@ public class Game{
   public String blackPlayer;
   public String result;
   public String opening;
+  public String date;
   public ArrayList<String> moves;
   public int line;
   public long startingByte;
@@ -42,6 +43,9 @@ public class Game{
             }
             if(lineContent.startsWith("[Result")){
               games[i].result = lineContent.substring(9,lineContent.length()-2);
+            }
+            if(lineContent.startsWith("[UTCDate")){
+              games[i].date = lineContent.substring(10,lineContent.length()-2);
             }
             if(lineContent.startsWith("[Opening")){
               games[i].opening = lineContent.substring(10,lineContent.length()-2);
@@ -90,6 +94,9 @@ public class Game{
           if(lineContent.startsWith("[Result")){
             this.result = lineContent.substring(9,lineContent.length()-2);
           }
+          if(lineContent.startsWith("[UTCDate")){
+            this.date = lineContent.substring(10,lineContent.length()-2);
+          }
           if(lineContent.startsWith("[Opening")){
             this.opening = lineContent.substring(10,lineContent.length()-2);
           }
@@ -112,6 +119,7 @@ public class Game{
     res += "White : "+this.whitePlayer+"\n";
     res += "Black : "+this.blackPlayer+"\n";
     res += "Result : "+this.result+"\n";
+    res += "Date : "+this.date+"\n";
     res += "Opening : "+this.opening+"\n";
     res += "Moves : "+this.moves+"\n";
     return res;
