@@ -11,6 +11,7 @@ public class specificGameByIndex{
       for(int i=0;i<folder.list().length;i++){
         fileFolder.add(folder.list()[i]);
       }
+      fileFolder.sort(String::compareToIgnoreCase);
       Game tmp = new Game();
       String targetUrl = "https://lichess.org/WKwWnuil";
       for(int i=0;i<fileFolder.size();i++){

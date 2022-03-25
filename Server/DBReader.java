@@ -124,6 +124,8 @@ public class DBReader{
       for(int i=0;i<folder.list().length;i++){
         fileFolder.add(folder.list()[i]);
       }
+      fileFolder.sort(String::compareToIgnoreCase);
+      System.out.println(fileFolder.toString());
 
       /*
       Traitement de chaque fichier .pgn
