@@ -26,7 +26,14 @@ class clientConnexion extends Thread{
         dataOutputStream.writeUTF(playerGames.length+" games found.");
         dataOutputStream.writeUTF("[/METADATA]");
         for(int i=0;i<playerGames.length;i++){
-          dataOutputStream.writeUTF(playerGames[playerGames.length-i-1].toString());
+          dataOutputStream.writeUTF("Type : "+playerGames[playerGames.length-i-1].type);
+          dataOutputStream.writeUTF("URL : "+playerGames[playerGames.length-i-1].url);
+          dataOutputStream.writeUTF("White : "+playerGames[playerGames.length-i-1].whitePlayer);
+          dataOutputStream.writeUTF("Black : "+playerGames[playerGames.length-i-1].blackPlayer);
+          dataOutputStream.writeUTF("Result : "+playerGames[playerGames.length-i-1].result);
+          dataOutputStream.writeUTF("Date : "+playerGames[playerGames.length-i-1].date);
+          dataOutputStream.writeUTF("Opening : "+playerGames[playerGames.length-i-1].opening);
+          dataOutputStream.writeUTF("\n");
         }
         dataOutputStream.writeUTF("fin");
       }else dataOutputStream.writeUTF("No game found for this nickname\n");
