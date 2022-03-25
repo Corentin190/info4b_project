@@ -33,14 +33,16 @@ public class client {
             if(!in.equals("[METADATA]") && !in.equals("[/METADATA]")){
               System.out.println(in);
             }
-          }while(!in.equals("[/METADATA]"));
+          }while(!in.equals("[/METADATA]") && !in.equals("No game found for this nickname\n"));
           System.out.println("API response time : "+(System.currentTimeMillis()-startTime)+" ms");
-          System.out.println("Do you want to see the results ? (y or whatever)");
-          if(sc.nextLine().equals("y")){
-            do{
-              in = dataInputStream.readUTF();
-              if(!in.equals("fin"))System.out.println(in);
-            }while(!in.equals("fin"));
+          if(!in.equals("No game found for this nickname\n")) {
+            System.out.println("Do you want to see the results ? (y or whatever)");
+            if(sc.nextLine().equals("y")){
+              do{
+                in = dataInputStream.readUTF();
+                if(!in.equals("fin"))System.out.println(in);
+              }while(!in.equals("fin"));
+            }
           }
         }
       }
