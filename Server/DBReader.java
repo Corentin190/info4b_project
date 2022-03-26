@@ -4,11 +4,11 @@ import data.structures.*;
 import data.searching.*;
 
 class fileReader extends Thread{
-  private String dataFile;
+  private ArrayList<String> fileFolder;
   public int cpt;
 
-  public fileReader(String dataFile){
-    this.dataFile = dataFile;
+  public fileReader(ArrayList<String> fileFolder){
+    this.fileFolder = fileFolder;
     this.cpt = 0;
   }
 
@@ -105,7 +105,7 @@ class fileReader extends Thread{
   private void saveUrlIndex(File urlIndexFile, Hashtable<String,Long> urlHashtable){
     try{
       if(!urlIndexFile.exists())urlIndexFile.createNewFile();
-      FileOutputStream out = new FileOutputStream(urlIndexFile);
+      FileOutputStream out = new FileOutputStream(urlIndexFile,true);
       OutputStreamWriter writer = new OutputStreamWriter(out);
       Enumeration<String> keys = urlHashtable.keys();
       while(keys.hasMoreElements()){
@@ -118,95 +118,124 @@ class fileReader extends Thread{
     }
   }
 
+  private synchronized String popFirstFile(){
+    if(this.fileFolder.size()>0){
+      String res = this.fileFolder.get(0);
+      this.fileFolder.remove(0);
+      return res;
+    }else return null;
+  }
+
   public void run(){
     try{
-      /*
-      Création d'un fichier .dat correspondant aux données des joueurs.
-      Création d'un lecteur permettant de lire le fichier .pgn et des Hashtable permettant le stockage temporaire des données traitées.
-      */
-      String playersDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_player_data.dat";
-      String openingDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_opening_data.dat";
-      String urlIndexFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_url_index.dat";
+      while(!fileFolder.isEmpty()){
 
-      File outputPlayerData = new File(playersDataFile);
-      File outputOpeningData = new File(openingDataFile);
-      File outputUrlIndex = new File(urlIndexFile);
-
-      if(!outputPlayerData.exists() || !outputOpeningData.exists() || !outputUrlIndex.exists()){
-
-        FileInputStream in = new FileInputStream("Src/"+dataFile);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        Hashtable<String,Integer> openingHashtable = new Hashtable<String,Integer>();
-        Hashtable<String,ArrayList<Long>> playersHashtable = new Hashtable<String,ArrayList<Long>>();
-        Hashtable<String,Long> urlHashtable = new Hashtable<String,Long>();
-        int lineCpt = 0;
-        long byteCpt = 0;
-        System.out.println("Processing "+dataFile);
-        do{
-          Game tmp = new Game();
-          tmp.line = lineCpt;
-          tmp.startingByte = byteCpt;
-          String line = "";
-          int blankLineCpt = 0;
-
-          /*
-          La section suivante lit ligne par ligne tant qu'elle ne rencontre pas 2 lignes blanches.
-          Lorsque 2 lignes blanches ont été lues, une partie entière a été lue.
-          Chaque ligne lue est traitée afin d'en extraire les informations et les stocker dans une instance de Game.
-          */
-
-          do{
-            line = reader.readLine();
-            if(line != null){
-              if(line.startsWith("[Event")){
-                tmp.type = line.substring(8,line.length()-2);
-              }
-              if(line.startsWith("[Site")){
-                tmp.url = line.substring(7,line.length()-2);
-              }
-              if(line.startsWith("[White ")){
-                tmp.whitePlayer = line.substring(8,line.length()-2);
-              }
-              if(line.startsWith("[Black ")){
-                tmp.blackPlayer = line.substring(8,line.length()-2);
-              }
-              if(line.startsWith("[Result")){
-                tmp.result = line.substring(9,line.length()-2);
-              }
-              if(line.startsWith("[UTCDate")){
-                tmp.result = line.substring(10,line.length()-2);
-              }
-              if(line.startsWith("[Opening")){
-                tmp.opening = line.substring(10,line.length()-2);
-              }
-              if(line.equals("")){
-                blankLineCpt++;
-              }
-            }
-            lineCpt++;
-            byteCpt += line.getBytes().length+1;
-          }while(blankLineCpt < 2);
-          cpt++;
-          extractPlayerData(playersHashtable,tmp);
-          extractOpeningIteration(openingHashtable,tmp);
-          extractUrl(urlHashtable,tmp);
-        }while(reader.ready());
+        String dataFile = popFirstFile();
 
         /*
-        Fermeture du lecteur et sauvegarde des données traitées.
+        Création d'un fichier .dat correspondant aux données des joueurs.
+        Création d'un lecteur permettant de lire le fichier .pgn et des Hashtable permettant le stockage temporaire des données traitées.
         */
 
-        System.out.println("Saving data as "+playersDataFile);
-        savePlayerData(outputPlayerData,playersHashtable);
-        System.out.println("Saving data as "+openingDataFile);
-        saveOpeningData(outputOpeningData,openingHashtable);
-        System.out.println("Saving data as "+urlIndexFile);
-        saveUrlIndex(outputUrlIndex,urlHashtable);
-        reader.close();
-        in.close();
-        //================================ Print de debug ================================
-        System.out.println("==> "+cpt+" Games read");
-        System.out.println("==> "+playersHashtable.size()+" Players saved");
+        String playersDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_player_data.dat";
+        String openingDataFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_opening_data.dat";
+        String urlIndexFile = "Src/"+dataFile.substring(0,dataFile.length()-4)+"_url_index.dat";
+
+        File outputPlayerData = new File(playersDataFile);
+        File outputOpeningData = new File(openingDataFile);
+        File outputUrlIndex = new File(urlIndexFile);
+
+        if(!outputPlayerData.exists() || !outputOpeningData.exists() || !outputUrlIndex.exists()){
+
+          if(outputUrlIndex.exists())outputUrlIndex.delete();
+
+          FileInputStream in = new FileInputStream("Src/"+dataFile);
+          BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+          Hashtable<String,Integer> openingHashtable = new Hashtable<String,Integer>();
+          Hashtable<String,ArrayList<Long>> playersHashtable = new Hashtable<String,ArrayList<Long>>();
+          Hashtable<String,Long> urlHashtable = new Hashtable<String,Long>();
+          int lineCpt = 0;
+          long byteCpt = 0;
+          int startCpt = this.cpt;
+          int saveCpt = 1;
+          System.out.println(this.getName()+" : Processing "+dataFile);
+          do{
+            Game tmp = new Game();
+            tmp.line = lineCpt;
+            tmp.startingByte = byteCpt;
+            String line = "";
+            int blankLineCpt = 0;
+
+            /*
+            La section suivante lit ligne par ligne tant qu'elle ne rencontre pas 2 lignes blanches.
+            Lorsque 2 lignes blanches ont été lues, une partie entière a été lue.
+            Chaque ligne lue est traitée afin d'en extraire les informations et les stocker dans une instance de Game.
+            */
+
+            do{
+              line = reader.readLine();
+              if(line != null){
+                if(line.startsWith("[Event")){
+                  tmp.type = line.substring(8,line.length()-2);
+                }
+                if(line.startsWith("[Site")){
+                  tmp.url = line.substring(7,line.length()-2);
+                }
+                if(line.startsWith("[White ")){
+                  tmp.whitePlayer = line.substring(8,line.length()-2);
+                }
+                if(line.startsWith("[Black ")){
+                  tmp.blackPlayer = line.substring(8,line.length()-2);
+                }
+                if(line.startsWith("[Result")){
+                  tmp.result = line.substring(9,line.length()-2);
+                }
+                if(line.startsWith("[UTCDate")){
+                  tmp.result = line.substring(10,line.length()-2);
+                }
+                if(line.startsWith("[Opening")){
+                  tmp.opening = line.substring(10,line.length()-2);
+                }
+                if(line.equals("")){
+                  blankLineCpt++;
+                }
+              }
+              lineCpt++;
+              byteCpt += line.getBytes().length+1;
+            }while(blankLineCpt < 2);
+            cpt++;
+            extractPlayerData(playersHashtable,tmp);
+            extractOpeningIteration(openingHashtable,tmp);
+            extractUrl(urlHashtable,tmp);
+            if(playersHashtable.size()>100000){
+              //System.out.println(this.getName()+" : playersHashtable size : "+playersHashtable.size());
+            }
+            if(openingHashtable.size()>100000){
+              //System.out.println(this.getName()+" : openingHashtable size : "+openingHashtable.size());
+            }
+            if(urlHashtable.size()>100000){
+              //System.out.println(this.getName()+" : urlHashtable size : "+urlHashtable.size());
+              saveUrlIndex(outputUrlIndex,urlHashtable);
+              urlHashtable.clear();
+            }
+          }while(reader.ready());
+
+          /*
+          Fermeture du lecteur et sauvegarde des données traitées.
+          */
+
+          System.out.println(this.getName()+" : Saving data as "+playersDataFile);
+          savePlayerData(outputPlayerData,playersHashtable);
+          System.out.println(this.getName()+" : Saving data as "+openingDataFile);
+          saveOpeningData(outputOpeningData,openingHashtable);
+          System.out.println(this.getName()+" : Saving data as "+urlIndexFile);
+          saveUrlIndex(outputUrlIndex,urlHashtable);
+          reader.close();
+          in.close();
+          //================================ Print de debug ================================
+          System.out.println(this.getName()+" : ==> "+(cpt-startCpt)+" Games read");
+          System.out.println(this.getName()+" : ==> "+playersHashtable.size()+" Players saved");
+        }
       }
     }catch(IOException e){
       e.printStackTrace();
@@ -226,21 +255,15 @@ public class DBReader{
 
       ArrayList<String> fileFolder = new ArrayList<>();
       for(int i=0;i<folder.list().length;i++){
-        fileFolder.add(folder.list()[i]);
+        if(folder.list()[i].endsWith(".pgn")){
+          fileFolder.add(folder.list()[i]);
+        }
       }
       fileFolder.sort(String::compareToIgnoreCase);
 
-      /*
-      Traitement de chaque fichier .pgn
-      */
-
       ArrayList<fileReader> frTab = new ArrayList<fileReader>();
-
-      for(int i=0;i<fileFolder.size();i++){
-        String dataFile = fileFolder.get(i);
-        if(dataFile.endsWith(".pgn")){
-          frTab.add(new fileReader(dataFile));
-        }
+      for(int i=0;i<16;i++){
+        frTab.add(new fileReader(fileFolder));
       }
 
       for(int i=0;i<frTab.size();i++) {
@@ -250,9 +273,9 @@ public class DBReader{
       for(int i=0;i<frTab.size();i++){
         frTab.get(i).join();
         overall_cpt+=frTab.get(i).cpt;
-        System.out.println("Thread "+i+" fini !");
+        System.out.println("Thread ("+(i+1)+"/"+frTab.size()+") fini !");
       }
-      System.out.println("\n\n==> "+overall_cpt+" Games read across all files");
+      System.out.format("\n\n==> %,8d Games read across all files\n", overall_cpt);
     }catch (InterruptedException e){
       e.printStackTrace();
     }
