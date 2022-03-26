@@ -260,9 +260,17 @@ public class DBReader{
         }
       }
       fileFolder.sort(String::compareToIgnoreCase);
-
+      final int NB_THREAD;
+      if(args.length>0){
+        System.out.println("Running with "+args[0]+" threads");
+        NB_THREAD = Integer.parseInt(args[0]);
+      }
+      else{
+        System.out.println("No thread count entered, running 1 threaded");
+        NB_THREAD = 1;
+      }
       ArrayList<fileReader> frTab = new ArrayList<fileReader>();
-      for(int i=0;i<16;i++){
+      for(int i=0;i<NB_THREAD;i++){
         frTab.add(new fileReader(fileFolder));
       }
 
