@@ -15,28 +15,32 @@ class clientConnexion extends Thread{
 
   private void search(String nickname){
     PlayerGamesSearcher searcher = new PlayerGamesSearcher(nickname);
-    Game[] playerGames = searcher.load();
     try{
       OutputStream outputStream = clientSocket.getOutputStream();
       DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
       InputStream inputStream = clientSocket.getInputStream();
       DataInputStream dataInputStream = new DataInputStream(inputStream);
-      if(playerGames!=null && playerGames.length>0){
-        dataOutputStream.writeUTF("[METADATA]");
-        dataOutputStream.writeUTF(playerGames.length+" games found.");
-        dataOutputStream.writeUTF("[/METADATA]");
-        for(int i=0;i<playerGames.length;i++){
-          dataOutputStream.writeUTF("Type : "+playerGames[playerGames.length-i-1].type);
-          dataOutputStream.writeUTF("URL : "+playerGames[playerGames.length-i-1].url);
-          dataOutputStream.writeUTF("White : "+playerGames[playerGames.length-i-1].whitePlayer);
-          dataOutputStream.writeUTF("Black : "+playerGames[playerGames.length-i-1].blackPlayer);
-          dataOutputStream.writeUTF("Result : "+playerGames[playerGames.length-i-1].result);
-          dataOutputStream.writeUTF("Date : "+playerGames[playerGames.length-i-1].date);
-          dataOutputStream.writeUTF("Opening : "+playerGames[playerGames.length-i-1].opening);
-          dataOutputStream.writeUTF("\n");
-        }
-        dataOutputStream.writeUTF("fin");
-      }else dataOutputStream.writeUTF("No game found for this nickname\n");
+      int nbGamesFound = 0;
+      do{
+        Game[] playerGames = searcher.loadNextThousand();
+        nbGamesFound = playerGames.length;
+        if(playerGames!=null && playerGames.length>0){
+          dataOutputStream.writeUTF("[METADATA]");
+          dataOutputStream.writeUTF(playerGames.length+" games found.");
+          dataOutputStream.writeUTF("[/METADATA]");
+          for(int i=0;i<playerGames.length;i++){
+            dataOutputStream.writeUTF("Type : "+playerGames[playerGames.length-i-1].type);
+            dataOutputStream.writeUTF("URL : "+playerGames[playerGames.length-i-1].url);
+            dataOutputStream.writeUTF("White : "+playerGames[playerGames.length-i-1].whitePlayer);
+            dataOutputStream.writeUTF("Black : "+playerGames[playerGames.length-i-1].blackPlayer);
+            dataOutputStream.writeUTF("Result : "+playerGames[playerGames.length-i-1].result);
+            dataOutputStream.writeUTF("Date : "+playerGames[playerGames.length-i-1].date);
+            dataOutputStream.writeUTF("Opening : "+playerGames[playerGames.length-i-1].opening);
+            dataOutputStream.writeUTF("\n");
+          }
+          dataOutputStream.writeUTF("fin");
+        }else dataOutputStream.writeUTF("No game found for this nickname\n");
+      }while(nbGamesFound>=1000 && dataInputStream.readUTF().equals("keep_reading"));
     }catch(IOException e){
       e.printStackTrace();
     }
