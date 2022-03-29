@@ -207,12 +207,6 @@ class fileReader extends Thread{
             extractPlayerData(playersHashtable,tmp);
             extractOpeningIteration(openingHashtable,tmp);
             extractUrl(urlHashtable,tmp);
-            if(playersHashtable.size()>100000){
-              //System.out.println(this.getName()+" : playersHashtable size : "+playersHashtable.size());
-            }
-            if(openingHashtable.size()>100000){
-              //System.out.println(this.getName()+" : openingHashtable size : "+openingHashtable.size());
-            }
             if(urlHashtable.size()>100000){
               //System.out.println(this.getName()+" : urlHashtable size : "+urlHashtable.size());
               saveUrlIndex(outputUrlIndex,urlHashtable);
