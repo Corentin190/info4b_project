@@ -19,7 +19,7 @@ public class client {
         scanner = sc.nextLine();
         if(scanner.startsWith("exit"))break;
         else if(scanner.startsWith("search ")){
-          clientSocket.connect(new InetSocketAddress("127.0.0.1",1085));
+          clientSocket.connect(new InetSocketAddress("172.31.18.52",1085));
           inputStream = clientSocket.getInputStream();
           dataInputStream = new DataInputStream(inputStream);
           outputStream = clientSocket.getOutputStream();
