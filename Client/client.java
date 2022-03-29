@@ -46,7 +46,10 @@ public class client {
             if(gamesFound>=1000){
               System.out.println("Voulez-vous voir plus ?");
               if(sc.nextLine().equals("y"))dataOutputStream.writeUTF("keep_reading");
-              else transmissionOver = true;
+              else{
+                transmissionOver = true;
+                dataOutputStream.writeUTF("stop_reading");
+              }
             }else transmissionOver = true;
           }while(!transmissionOver);
         }
