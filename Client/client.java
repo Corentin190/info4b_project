@@ -10,6 +10,9 @@ public class client {
       OutputStream outputStream;
       DataOutputStream dataOutputStream;
 
+      String ip="127.0.0.1";
+      int port = 1085;
+
       System.out.println("Welcome !\n-------\nIf you are looking for all the game of a player, tap 'search <nickname>'.\nFor example : search 2girls1cup\n-------\nIf you want to quit, tap 'exit'");
       String scanner="";
       while(true){
@@ -19,7 +22,7 @@ public class client {
         scanner = sc.nextLine();
         if(scanner.startsWith("exit"))break;
         else if(scanner.startsWith("search ")){
-          clientSocket.connect(new InetSocketAddress("127.0.0.1",1085));
+          clientSocket.connect(new InetSocketAddress(ip,port));
           inputStream = clientSocket.getInputStream();
           dataInputStream = new DataInputStream(inputStream);
           outputStream = clientSocket.getOutputStream();
@@ -41,9 +44,9 @@ public class client {
             System.out.println("API response time : "+(System.currentTimeMillis()-startTime)+" ms");
             do{
               in = dataInputStream.readUTF();
-              if(!in.equals("fin"))System.out.println(in);
+              //if(!in.equals("fin"))System.out.println(in);
             }while(!in.equals("fin"));
-            if(gamesFound>=1000){
+            if(gamesFound>=1000){                                 //fast pour les gros joueurs à +++++++ de 1000 parties, mais aussi long pour le reste
               System.out.println("Voulez-vous voir plus ?");
               if(sc.nextLine().equals("y"))dataOutputStream.writeUTF("keep_reading");
               else{
@@ -52,6 +55,24 @@ public class client {
               }
             }else transmissionOver = true;
           }while(!transmissionOver);
+        }else if(scanner.startsWith("opening")){
+          clientSocket.connect(new InetSocketAddress(ip,port));
+          inputStream = clientSocket.getInputStream();
+          dataInputStream = new DataInputStream(inputStream);
+          outputStream = clientSocket.getOutputStream();
+          dataOutputStream = new DataOutputStream(outputStream);
+          dataOutputStream.writeUTF(scanner);
+          while(dataInputStream.readBoolean())
+            System.out.println(dataInputStream.readUTF());
+        }else if(scanner.startsWith("active")){
+          clientSocket.connect(new InetSocketAddress(ip,port));
+          inputStream = clientSocket.getInputStream();
+          dataInputStream = new DataInputStream(inputStream);
+          outputStream = clientSocket.getOutputStream();
+          dataOutputStream = new DataOutputStream(outputStream);
+          dataOutputStream.writeUTF(scanner);
+          while(dataInputStream.readBoolean())
+            System.out.println(dataInputStream.readUTF());
         }
       }
     }catch (IOException e){

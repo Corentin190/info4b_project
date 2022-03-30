@@ -3,7 +3,7 @@ import java.io.*;
 import data.structures.*;
 import data.searching.*;
 
-public class GameCount{
+public class PlayersCount{
 	public static void main(String[] args) {
 		long overallCpt=0;
 		try{
@@ -15,7 +15,7 @@ public class GameCount{
 	      fileFolder.sort(String::compareToIgnoreCase);
 	      for(int i=0;i<fileFolder.size();i++){
 	        String dataFile = fileFolder.get(i);
-	        if(dataFile.endsWith("_url_index.dat")){
+	        if(dataFile.endsWith("_player_data.dat")){
 	          FileInputStream in = new FileInputStream("Src/"+dataFile);
 	          BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 	          System.out.println("Processing "+dataFile);
@@ -24,11 +24,12 @@ public class GameCount{
 	          	reader.readLine();
 	          	overallCpt++;
 	          }while(reader.ready());
+	          overallCpt=(overallCpt-1)/3;
 	          reader.close();
 	          in.close();
 	        }
 	      }
-	      System.out.format("%,8d games in total\n", overallCpt);
+	      System.out.format("%,8d players in total\n", overallCpt);
 	    }catch (IOException e){
 	      e.printStackTrace();
 	    }
