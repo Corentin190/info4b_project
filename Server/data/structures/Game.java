@@ -113,7 +113,7 @@ public class Game{
   public String toString(){
     String res = "";
     res += "Type : "+this.type+"\n";
-    res += "URL : " "https://lichess.org/"+this.url+"\n";
+    res += "URL : https://lichess.org/"+this.url+"\n";
     res += "White : "+this.whitePlayer+"\n";
     res += "Black : "+this.blackPlayer+"\n";
     res += "Result : "+this.result+"\n";

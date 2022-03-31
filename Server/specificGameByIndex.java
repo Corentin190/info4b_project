@@ -13,7 +13,7 @@ public class specificGameByIndex{
       }
       fileFolder.sort(String::compareToIgnoreCase);
       Game tmp = new Game();
-      String targetUrl = "https://lichess.org/WKwWnuil";
+      String targetUrl = "sSiiPuco";
       for(int i=0;i<fileFolder.size();i++){
         String dataFile = fileFolder.get(i);
         if(dataFile.endsWith("_url_index.dat")){
