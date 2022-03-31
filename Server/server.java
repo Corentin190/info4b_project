@@ -21,21 +21,18 @@ class clientConnexion extends Thread{
       InputStream inputStream = clientSocket.getInputStream();
       DataInputStream dataInputStream = new DataInputStream(inputStream);
       int nbGamesFound = 0;
-      // do{
-        Game[] playerGames = searcher.load(nbGames);
-        for(int i=0;i<nbGames;i++){
-          dataOutputStream.writeUTF("Type : "+playerGames[playerGames.length-i-1].type);
-          dataOutputStream.writeUTF("URL : "+playerGames[playerGames.length-i-1].url);
-          dataOutputStream.writeUTF("White : "+playerGames[playerGames.length-i-1].whitePlayer);
-          dataOutputStream.writeUTF("Black : "+playerGames[playerGames.length-i-1].blackPlayer);
-          dataOutputStream.writeUTF("Result : "+playerGames[playerGames.length-i-1].result);
-          dataOutputStream.writeUTF("Date : "+playerGames[playerGames.length-i-1].date);
-          dataOutputStream.writeUTF("Opening : "+playerGames[playerGames.length-i-1].opening);
-          dataOutputStream.writeUTF("\n");
-        }
-        dataOutputStream.writeUTF("fin");
-       // }else dataOutputStream.writeUTF("No game found for this nickname\n");
-      // }while(nbGamesFound>=1000 && dataInputStream.readUTF().equals("keep_reading"));
+      Game[] playerGames = searcher.load(nbGames);
+      for(int i=0;i<nbGames;i++){
+        dataOutputStream.writeUTF("Type : "+playerGames[playerGames.length-i-1].type);
+        dataOutputStream.writeUTF("URL : "+playerGames[playerGames.length-i-1].url);
+        dataOutputStream.writeUTF("White : "+playerGames[playerGames.length-i-1].whitePlayer);
+        dataOutputStream.writeUTF("Black : "+playerGames[playerGames.length-i-1].blackPlayer);
+        dataOutputStream.writeUTF("Result : "+playerGames[playerGames.length-i-1].result);
+        dataOutputStream.writeUTF("Date : "+playerGames[playerGames.length-i-1].date);
+        dataOutputStream.writeUTF("Opening : "+playerGames[playerGames.length-i-1].opening);
+        dataOutputStream.writeUTF("\n");
+      }
+      dataOutputStream.writeUTF("fin");
     }catch(IOException e){
       e.printStackTrace();
     }
@@ -53,7 +50,6 @@ class clientConnexion extends Thread{
       dataOutputStream.writeUTF(nbGames+"");
       int nbb=Integer.parseInt(dataInputStream.readUTF());
       System.out.println(nbb);
-      //System.out.println(Integer.parseInt(dataInputStream.readUTF()));
 
       search(nickname,nbb);
 
@@ -74,8 +70,6 @@ class clientConnexion extends Thread{
       for(int i=0;i<searcher.topOpening.length;i++){
         dataOutputStream.writeBoolean(true);
         dataOutputStream.writeUTF(i+1+". "+searcher.topOpening[i]+" - "+searcher.openingList.get(searcher.topOpening[i]));
-        
-        // System.out.println(i+". "+searcher.topOpening[i]+" - "+searcher.openingList.get(searcher.topOpening[i]));
       }dataOutputStream.writeBoolean(false);
     }catch(IOException e){
       e.printStackTrace();

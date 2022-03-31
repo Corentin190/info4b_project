@@ -28,48 +28,29 @@ public class client {
           outputStream = clientSocket.getOutputStream();
           dataOutputStream = new DataOutputStream(outputStream);
           dataOutputStream.writeUTF(scanner);
-        long startTime = System.currentTimeMillis();
-        System.out.println("Searching for "+scanner.substring(7,scanner.length()));
-        String in = "";
-        int gamesFound = 0;
-        boolean transmissionOver = false;
+          long startTime = System.currentTimeMillis();
+          System.out.println("Searching for "+scanner.substring(7,scanner.length()));
+          String in = "";
+          int gamesFound = 0;
+          boolean transmissionOver = false;
 
-        int nb = Integer.parseInt(dataInputStream.readUTF());
-        System.out.println(nb+" games found for "+scanner.substring(7,scanner.length()));
-        if(nb>0){
-          System.out.println("Do you want to see those games ?");
-          if(sc.nextLine().equals("yes")){
-            System.out.println("How many ?");
-            dataOutputStream.writeUTF(sc.nextLine());
-            do{
+          int nb = Integer.parseInt(dataInputStream.readUTF());
+          System.out.println(nb+" games found for "+scanner.substring(7,scanner.length()));
+          if(nb>0){
+            System.out.println("Do you want to see those games ?");
+            if(sc.nextLine().equals("yes")){
+              int input;
+              do{
+                System.out.println("How many ?");
+                input = Integer.parseInt(sc.nextLine());
+              }while(input<=0 || input >nb);
+              dataOutputStream.writeUTF(input+"");
+              do{
                 in = dataInputStream.readUTF();
                 if(!in.equals("fin"))System.out.println(in);
               }while(!in.equals("fin"));
+            }
           }
-        }
-          /*
-          do{
-            do{
-              in = dataInputStream.readUTF();
-              if(!in.equals("[METADATA]") && !in.equals("[/METADATA]")){
-                System.out.println(in);
-                gamesFound = Integer.parseInt(in.substring(0,in.length()-13));
-              }
-            }while(!in.equals("[/METADATA]") && !in.equals("No game found for this nickname\n"));
-            System.out.println("API response time : "+(System.currentTimeMillis()-startTime)+" ms");
-            do{
-              in = dataInputStream.readUTF();
-              //if(!in.equals("fin"))System.out.println(in);
-            }while(!in.equals("fin"));
-            if(gamesFound>=1000){                                 //fast pour les gros joueurs à +++++++ de 1000 parties, mais aussi long pour le reste
-              System.out.println("Voulez-vous voir plus ?");
-              if(sc.nextLine().equals("y"))dataOutputStream.writeUTF("keep_reading");
-              else{
-                transmissionOver = true;
-                dataOutputStream.writeUTF("stop_reading");
-              }
-            }else transmissionOver = true;
-          }while(!transmissionOver);*/
         }else if(scanner.startsWith("opening")){
           clientSocket.connect(new InetSocketAddress(ip,port));
           inputStream = clientSocket.getInputStream();
@@ -78,7 +59,7 @@ public class client {
           dataOutputStream = new DataOutputStream(outputStream);
           dataOutputStream.writeUTF(scanner);
           while(dataInputStream.readBoolean())
-            System.out.println(dataInputStream.readUTF());
+          System.out.println(dataInputStream.readUTF());
         }else if(scanner.startsWith("active")){
           clientSocket.connect(new InetSocketAddress(ip,port));
           inputStream = clientSocket.getInputStream();
@@ -87,7 +68,7 @@ public class client {
           dataOutputStream = new DataOutputStream(outputStream);
           dataOutputStream.writeUTF(scanner);
           while(dataInputStream.readBoolean())
-            System.out.println(dataInputStream.readUTF());
+          System.out.println(dataInputStream.readUTF());
         }
       }
     }catch (IOException e){

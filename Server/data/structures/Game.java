@@ -27,7 +27,6 @@ public class Game{
         games[i] = new Game();
         do{
           String lineContent = reader.readLine();
-          //System.out.println(lineContent);
           if(lineContent != null){
             if(lineContent.startsWith("[Event")){
               games[i].type = lineContent.substring(8,lineContent.length()-2);
@@ -57,7 +56,7 @@ public class Game{
         }while(blankLineCpt < 2);
       }
       in.close();
-    } catch(IOException e) {
+    }catch(IOException e) {
       e.printStackTrace();
     }
     return games;
