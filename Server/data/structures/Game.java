@@ -32,7 +32,7 @@ public class Game{
               games[i].type = lineContent.substring(8,lineContent.length()-2);
             }
             if(lineContent.startsWith("[Site")){
-              games[i].url = lineContent.substring(7,lineContent.length()-2);
+              games[i].url = lineContent.substring(27,lineContent.length()-2);
             }
             if(lineContent.startsWith("[White ")){
               games[i].whitePlayer = lineContent.substring(8,lineContent.length()-2);
@@ -76,13 +76,12 @@ public class Game{
       int blankLineCpt = 0;
       do{
         String lineContent = reader.readLine();
-        //System.out.println(lineContent);
         if(lineContent != null){
           if(lineContent.startsWith("[Event")){
             this.type = lineContent.substring(8,lineContent.length()-2);
           }
           if(lineContent.startsWith("[Site")){
-            this.url = lineContent.substring(7,lineContent.length()-2);
+            this.url = lineContent.substring(27,lineContent.length()-2);
           }
           if(lineContent.startsWith("[White ")){
             this.whitePlayer = lineContent.substring(8,lineContent.length()-2);
@@ -114,7 +113,7 @@ public class Game{
   public String toString(){
     String res = "";
     res += "Type : "+this.type+"\n";
-    res += "URL : "+this.url+"\n";
+    res += "URL : " "https://lichess.org/"+this.url+"\n";
     res += "White : "+this.whitePlayer+"\n";
     res += "Black : "+this.blackPlayer+"\n";
     res += "Result : "+this.result+"\n";

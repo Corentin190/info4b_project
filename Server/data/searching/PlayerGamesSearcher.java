@@ -93,7 +93,7 @@ public class PlayerGamesSearcher{
         }
         fileIndex++;
       }
-      System.out.println("Hashtable done ! "+playerDataHashtable.values().size()+" games found in "+(System.currentTimeMillis()-startTime)+"ms");
+      System.out.println("Hashtable done in "+(System.currentTimeMillis()-startTime)+"ms");
       Enumeration keyEnum = playerDataHashtable.keys();
       ArrayList<String> keys = new ArrayList<String>();
       while(keyEnum.hasMoreElements()){
@@ -110,10 +110,8 @@ public class PlayerGamesSearcher{
           startingBytesArray.add((long)playerDataHashtable.get(key).get(i));
           if(cpt>=toGame)break;
         }
-        System.out.println(key);
         long[] startingBytes = new long[startingBytesArray.size()];
         for(int i=0;i<startingBytesArray.size();i++){
-          System.out.println(""+i+" : "+startingBytesArray.get(i));
           startingBytes[i] = startingBytesArray.get(i);
         }
         Game[] res = Game.createFromFile(key.substring(0,key.length()-16)+".pgn",startingBytes);

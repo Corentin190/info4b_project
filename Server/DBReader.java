@@ -179,7 +179,7 @@ class fileReader extends Thread{
                   tmp.type = line.substring(8,line.length()-2);
                 }
                 if(line.startsWith("[Site")){
-                  tmp.url = line.substring(7,line.length()-2);
+                  tmp.url = line.substring(27,line.length()-2);
                 }
                 if(line.startsWith("[White ")){
                   tmp.whitePlayer = line.substring(8,line.length()-2);
@@ -208,7 +208,6 @@ class fileReader extends Thread{
             extractOpeningIteration(openingHashtable,tmp);
             extractUrl(urlHashtable,tmp);
             if(urlHashtable.size()>100000){
-              //System.out.println(this.getName()+" : urlHashtable size : "+urlHashtable.size());
               saveUrlIndex(outputUrlIndex,urlHashtable);
               urlHashtable.clear();
             }
