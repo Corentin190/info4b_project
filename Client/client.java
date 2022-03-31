@@ -37,13 +37,20 @@ public class client {
           int nb = Integer.parseInt(dataInputStream.readUTF());
           System.out.println(nb+" games found for "+scanner.substring(7,scanner.length()));
           if(nb>0){
-            System.out.println("Do you want to see those games ?");
-            if(sc.nextLine().equals("yes")){
+            System.out.println("Do you want to see those games ? (Y/N)");
+            if(sc.nextLine().toLowerCase().equals("y")){
               int input;
+              boolean error;
               do{
+                error = false;
                 System.out.println("How many ?");
-                input = Integer.parseInt(sc.nextLine());
-              }while(input<=0 || input >nb);
+                try{
+                  input = Integer.parseInt(sc.nextLine());
+                  if(input>nb || input<0)error = true;
+                }catch(NumberFormatException e){
+                  error = true;
+                }
+              }while(error);
               dataOutputStream.writeUTF(input+"");
               do{
                 in = dataInputStream.readUTF();

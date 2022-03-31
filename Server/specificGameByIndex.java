@@ -32,7 +32,6 @@ public class specificGameByIndex{
               long startingByte = Long.parseLong(line.substring((10+targetUrl.length()),line.length()-1));
               System.out.println(pgnFile+" "+startingByte);
               tmp = new Game(pgnFile,startingByte);
-              //
             }
           }while(reader.ready() && !line.startsWith("[Url \""+targetUrl+"\" : "));
           reader.close();
