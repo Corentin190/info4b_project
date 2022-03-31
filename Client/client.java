@@ -34,12 +34,14 @@ public class client {
           int gamesFound = 0;
           boolean transmissionOver = false;
 
+
           int nb = Integer.parseInt(dataInputStream.readUTF());
           System.out.println(nb+" games found for "+scanner.substring(7,scanner.length()));
           if(nb>0){
             System.out.println("Do you want to see those games ? (Y/N)");
             if(sc.nextLine().toLowerCase().equals("y")){
-              int input;
+              dataOutputStream.writeUTF("show");
+              int input = 0;
               boolean error;
               do{
                 error = false;
@@ -50,6 +52,7 @@ public class client {
                 }catch(NumberFormatException e){
                   error = true;
                 }
+                if(error)System.out.println("Invalid number, please try a valid number between 0 and "+nb);
               }while(error);
               dataOutputStream.writeUTF(input+"");
               do{
@@ -76,6 +79,8 @@ public class client {
           dataOutputStream.writeUTF(scanner);
           while(dataInputStream.readBoolean())
           System.out.println(dataInputStream.readUTF());
+        }else{
+          System.out.println("Wrong command, type help to show help guide");
         }
       }
     }catch (IOException e){

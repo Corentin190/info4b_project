@@ -13,7 +13,7 @@ public class PlayerGamesSearcher{
     this.playerGames = new ArrayList<Game>();
   }
 
-  public Integer loadNumber(){
+  public int loadNumber(){
     int nbGames=0;
     try{
       File folder = new File("Src/");
@@ -50,8 +50,7 @@ public class PlayerGamesSearcher{
     }catch(IOException e) {
       e.printStackTrace();
     }
-    if(nbGames>0)return nbGames;
-    else return null;
+    return nbGames;
   }
 
   public Game[] load(){

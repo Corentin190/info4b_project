@@ -23,6 +23,7 @@ class clientConnexion extends Thread{
       int nbGamesFound = 0;
       Game[] playerGames = searcher.load(nbGames);
       for(int i=0;i<nbGames;i++){
+        dataOutputStream.writeUTF("============== Game "+(i+1)+" ==============");
         dataOutputStream.writeUTF("Type : "+playerGames[playerGames.length-i-1].type);
         dataOutputStream.writeUTF("URL : "+playerGames[playerGames.length-i-1].url);
         dataOutputStream.writeUTF("White : "+playerGames[playerGames.length-i-1].whitePlayer);
@@ -48,12 +49,14 @@ class clientConnexion extends Thread{
       DataInputStream dataInputStream = new DataInputStream(inputStream);
 
       dataOutputStream.writeUTF(nbGames+"");
-      int nbb=Integer.parseInt(dataInputStream.readUTF());
-      System.out.println(nbb);
-
-      search(nickname,nbb);
-
-
+      if(nbGames>0){
+        String input = dataInputStream.readUTF();
+        if(input.equals("show")){
+          input = dataInputStream.readUTF();
+          System.out.println(Integer.parseInt(input));
+          search(nickname,Integer.parseInt(input));
+        }
+      }
     }catch(IOException e){
       e.printStackTrace();
     }
@@ -86,7 +89,7 @@ class clientConnexion extends Thread{
       searcher.load();
       for(int i=0;i<searcher.mostActivePlayers.length;i++){
         dataOutputStream.writeBoolean(true);
-        dataOutputStream.writeUTF(i+". "+searcher.mostActivePlayers[i]+" - "+searcher.playersGamesList.get(searcher.mostActivePlayers[i]));
+        dataOutputStream.writeUTF((i+1)+". "+searcher.mostActivePlayers[i]+" - "+searcher.playersGamesList.get(searcher.mostActivePlayers[i]));
       }
       dataOutputStream.writeBoolean(false);
     }catch(IOException e){
