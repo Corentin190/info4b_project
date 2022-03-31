@@ -3,13 +3,29 @@ import java.util.*;
 import data.structures.*;
 import data.searching.*;
 
-class fileReader extends Thread{
+class fileDistributor{
   private ArrayList<String> fileFolder;
-  public int cpt;
 
-  public fileReader(ArrayList<String> fileFolder){
+  public fileDistributor(ArrayList<String> fileFolder){
     this.fileFolder = fileFolder;
+  }
+
+  public synchronized String popFirstFile(){
+    if(this.fileFolder.size()>0){
+      String res = this.fileFolder.get(0);
+      this.fileFolder.remove(0);
+      return res;
+    }else return null;
+  }
+}
+
+class fileReader extends Thread{
+  public int cpt;
+  private fileDistributor fd;
+
+  public fileReader(fileDistributor fd){
     this.cpt = 0;
+    this.fd = fd;
   }
 
   /*
@@ -118,19 +134,11 @@ class fileReader extends Thread{
     }
   }
 
-  private synchronized String popFirstFile(){
-    if(this.fileFolder.size()>0){
-      String res = this.fileFolder.get(0);
-      this.fileFolder.remove(0);
-      return res;
-    }else return null;
-  }
-
   public void run(){
     try{
-      while(!fileFolder.isEmpty()){
-
-        String dataFile = popFirstFile();
+      String dataFile = this.fd.popFirstFile();
+      while(dataFile!=null){
+        System.out.println(this.getName()+" : "+dataFile);
 
         /*
         Création d'un fichier .dat correspondant aux données des joueurs.
@@ -229,6 +237,7 @@ class fileReader extends Thread{
           System.out.println(this.getName()+" : ==> "+(cpt-startCpt)+" Games read");
           System.out.println(this.getName()+" : ==> "+playersHashtable.size()+" Players saved");
         }
+        dataFile = fd.popFirstFile();
       }
     }catch(IOException e){
       e.printStackTrace();
@@ -253,6 +262,7 @@ public class DBReader{
         }
       }
       fileFolder.sort(String::compareToIgnoreCase);
+      fileDistributor fd = new fileDistributor(fileFolder);
       final int NB_THREAD;
       if(args.length>0){
         System.out.println("Running with "+args[0]+" threads");
@@ -264,7 +274,7 @@ public class DBReader{
       }
       ArrayList<fileReader> frTab = new ArrayList<fileReader>();
       for(int i=0;i<NB_THREAD;i++){
-        frTab.add(new fileReader(fileFolder));
+        frTab.add(new fileReader(fd));
       }
 
       for(int i=0;i<frTab.size();i++) {

@@ -12,6 +12,9 @@ public class client {
 
       String ip="127.0.0.1";
       int port = 1085;
+      if(args.length>0){
+        ip = args[0];
+      }
 
       System.out.println("Welcome !\n-------\nIf you are looking for all the game of a player, tap 'search <nickname>'.\nFor example : search 2girls1cup\n-------\nIf you want to quit, tap 'exit'");
       String scanner="";
