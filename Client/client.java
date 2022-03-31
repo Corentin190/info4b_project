@@ -28,11 +28,26 @@ public class client {
           outputStream = clientSocket.getOutputStream();
           dataOutputStream = new DataOutputStream(outputStream);
           dataOutputStream.writeUTF(scanner);
-          long startTime = System.currentTimeMillis();
-          System.out.println("Searching for "+scanner.substring(7,scanner.length()));
-          String in = "";
-          int gamesFound = 0;
-          boolean transmissionOver = false;
+        long startTime = System.currentTimeMillis();
+        System.out.println("Searching for "+scanner.substring(7,scanner.length()));
+        String in = "";
+        int gamesFound = 0;
+        boolean transmissionOver = false;
+
+        int nb = Integer.parseInt(dataInputStream.readUTF());
+        System.out.println(nb+" games found for "+scanner.substring(7,scanner.length()));
+        if(nb>0){
+          System.out.println("Do you want to see those games ?");
+          if(sc.nextLine().equals("yes")){
+            System.out.println("How many ?");
+            dataOutputStream.writeUTF(sc.nextLine());
+            do{
+                in = dataInputStream.readUTF();
+                if(!in.equals("fin"))System.out.println(in);
+              }while(!in.equals("fin"));
+          }
+        }
+          /*
           do{
             do{
               in = dataInputStream.readUTF();
@@ -54,7 +69,7 @@ public class client {
                 dataOutputStream.writeUTF("stop_reading");
               }
             }else transmissionOver = true;
-          }while(!transmissionOver);
+          }while(!transmissionOver);*/
         }else if(scanner.startsWith("opening")){
           clientSocket.connect(new InetSocketAddress(ip,port));
           inputStream = clientSocket.getInputStream();
