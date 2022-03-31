@@ -82,6 +82,12 @@ public class client {
           dataOutputStream.writeUTF(scanner);
           while(dataInputStream.readBoolean())
           System.out.println(dataInputStream.readUTF());
+        }else if(scanner.equals("help")){
+          File file = new File("../help.txt");
+          BufferedReader br = new BufferedReader(new FileReader(file));
+          String st;
+          while ((st = br.readLine()) != null)
+              System.out.println(st);
         }else{
           System.out.println("Wrong command, type help to show help guide");
         }

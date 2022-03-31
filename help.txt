@@ -1,0 +1,6 @@
+search <nickname> [looking for <nickname>'s games]
+	y [wish to see those games]
+		<Integer> [number of games to see]
+active <Integer> [looking for the <Integer> most active players]
+opening <Integer> [looking for the <Integer> top openings]
+help [looking for help]
