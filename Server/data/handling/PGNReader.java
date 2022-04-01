@@ -14,9 +14,12 @@ public class PGNReader extends Thread{
 
   public void run(){
     try{
+      long fileBytesSize = new File("Src/"+this.dataFile).length();
+      long currentlyReadBytes = 0;
       FileInputStream in = new FileInputStream("Src/"+this.dataFile);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       int gameCpt = 0;
+      long startReadTime = System.currentTimeMillis();
       while(reader.ready()){
         String gameText = "";
         String line;
@@ -33,6 +36,11 @@ public class PGNReader extends Thread{
         }while(blankLineCpt<2);
         gameCpt++;
         buffer.add(gameText);
+        currentlyReadBytes+=gameText.getBytes().length;
+        if(System.currentTimeMillis()-startReadTime>1000){
+          System.out.println("("+currentlyReadBytes+"/"+fileBytesSize+")"+"("+(currentlyReadBytes*100/fileBytesSize)+"%)");
+          startReadTime = System.currentTimeMillis();
+        }
       }
       reader.close();
       in.close();
