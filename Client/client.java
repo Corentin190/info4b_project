@@ -12,6 +12,7 @@ public class client {
 
       String ip="127.0.0.1";
       int port = 1085;
+      System.out.println("Connecting to "+ip+":"+port);
       if(args.length>0){
         ip = args[0];
       }
