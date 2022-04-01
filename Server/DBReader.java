@@ -151,6 +151,9 @@ class fileReader extends Thread{
           int startCpt = this.cpt;
           int saveCpt = 1;
           System.out.println(this.getName()+" : Processing "+dataFile);
+          long readBytes = 0;
+          long previousReadBytes = 0;
+          long startTime = System.currentTimeMillis();
           do{
             Game tmp = new Game();
             tmp.line = lineCpt;
@@ -167,6 +170,7 @@ class fileReader extends Thread{
             do{
               line = reader.readLine();
               if(line != null){
+                readBytes += line.getBytes().length;
                 if(line.startsWith("[Event")){
                   tmp.type = line.substring(8,line.length()-2);
                 }
@@ -194,6 +198,11 @@ class fileReader extends Thread{
               }
               lineCpt++;
               byteCpt += line.getBytes().length+1;
+              if(System.currentTimeMillis()-startTime>1000){
+                System.out.println(this.getName()+" : "+(readBytes-previousReadBytes)/1000000+"MB/s");
+                previousReadBytes = readBytes;
+                startTime = System.currentTimeMillis();
+              }
             }while(blankLineCpt < 2);
             cpt++;
             extractPlayerData(playersHashtable,tmp);
