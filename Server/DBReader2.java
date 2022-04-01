@@ -10,12 +10,12 @@ class GameBuffer{
   public GameBuffer(final int BUFFER_SIZE){
     this.BUFFER_SIZE = BUFFER_SIZE;
     this.buffer = new ArrayList<String>();
+    this.lock = new ReentrantLock();
   }
 
   public synchronized void add(String gameText){
     try{
       while(this.buffer.size()>=BUFFER_SIZE){
-        System.out.println("BUFFER OVERFLOW");
         wait();
       }
     }catch(InterruptedException e){
@@ -25,23 +25,18 @@ class GameBuffer{
     notifyAll();
   }
 
-  public String pop(){
-    this.lock.lock();
-    System.out.println("A thread acquired the lock");
+  public synchronized String pop(){
     try{
       while(this.buffer.size()<=0){
-        System.out.println("EMPTY BUFFER, WAITING FOR DATA");
         wait();
-        System.out.println("RESUMING OPERATIONS");
       }
     }catch(InterruptedException e){
       e.printStackTrace();
     }
+
     String gameText = this.buffer.get(0);
     this.buffer.remove(0);
     notifyAll();
-    System.out.println("A thread returned the lock");
-    this.lock.unlock();
     return gameText;
   }
 }
@@ -135,17 +130,18 @@ public class DBReader2{
 
     for(int i=0;i<fileFolder.size();i++){
       String dataFile = fileFolder.get(i);
+      System.out.println("================= Processing "+dataFile+" =================");
       GameBuffer buffer = new GameBuffer(1000000);
       CommonRessources ressources = new CommonRessources(dataFile);
       PGNReader reader = new PGNReader(dataFile,buffer);
       InfoExtractor[] tab = new InfoExtractor[7];
-      for(int j=0;i<tab.length;j++){
-        tab[i] = new InfoExtractor(buffer,ressources);
+      for(int j=0;j<tab.length;j++){
+        tab[j] = new InfoExtractor(buffer,ressources);
+      }
+      for(int j=0;j<tab.length;j++){
+        tab[j].start();
       }
       reader.start();
-      for(int j=0;j<tab.length;j++){
-        tab[i].start();
-      }
       try{
         reader.join();
       }catch(InterruptedException e){
