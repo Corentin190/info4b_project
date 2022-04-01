@@ -1,6 +1,14 @@
 import java.util.*;
 import java.io.*;
 
+/*class GameBuffer{
+  public String buffer;
+
+  public GameBuffer(final int BUFFER_SIZE){
+    this.buffer = new String[BUFFER_SIZE];
+  }
+}
+*/
 public class DBReader2{
   public static void main(String[] args) {
     try{
@@ -35,7 +43,7 @@ public class DBReader2{
           }while(blankLineCpt<2);
           bufferSimulation.add(gameText);
         }
-        System.out.println("Time to read "+dataFile+" : "+(System.currentTimeMillis()-prevTime)+"ms");
+        System.out.println("Time to read "+dataFile+" ("+bufferSimulation.size()+" games) : "+(System.currentTimeMillis()-prevTime)+"ms");
       }
     }catch(IOException e){
         e.printStackTrace();
