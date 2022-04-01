@@ -6,7 +6,8 @@ import java.util.concurrent.locks.*;
 public class GameBuffer{
   private final int BUFFER_SIZE;
   private ArrayList<String> buffer;
-  private ReentrantLock lock;
+  private ReentrantLock addersLock;
+  private ReentrantLock poppersLock;
   private boolean readerDone;
   public int bufferEmptyEvent;
   public int bufferFullEvent;
@@ -14,18 +15,19 @@ public class GameBuffer{
   public GameBuffer(final int BUFFER_SIZE){
     this.BUFFER_SIZE = BUFFER_SIZE;
     this.buffer = new ArrayList<String>();
-    this.lock = new ReentrantLock();
+    this.addersLock = new ReentrantLock();
+    this.poppersLock = new ReentrantLock();
     this.readerDone = false;
     this.bufferEmptyEvent = 0;
     this.bufferFullEvent = 0;
   }
 
-  public synchronized void setReaderDone(){
+  public void setReaderDone(){
     this.readerDone = true;
-    notifyAll();
+    this.notifyAll();
   }
 
-  public synchronized void add(String gameText){
+  public void add(String gameText){
     try{
       while(this.buffer.size()>=BUFFER_SIZE){
         this.bufferFullEvent++;
@@ -38,7 +40,7 @@ public class GameBuffer{
     notifyAll();
   }
 
-  public synchronized String pop(){
+  public String pop(){
     try{
       while(this.buffer.size()<=0 && !readerDone){
         this.bufferEmptyEvent++;
