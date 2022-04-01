@@ -3,7 +3,7 @@ package data.handling;
 import data.structures.*;
 import java.io.*;
 
-class PGNReader extends Thread{
+public class PGNReader extends Thread{
   private String dataFile;
   private GameBuffer buffer;
 
@@ -16,7 +16,6 @@ class PGNReader extends Thread{
     try{
       FileInputStream in = new FileInputStream("Src/"+this.dataFile);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-      long prevTime = System.currentTimeMillis();
       int gameCpt = 0;
       while(reader.ready()){
         String gameText = "";
@@ -37,7 +36,6 @@ class PGNReader extends Thread{
       }
       reader.close();
       in.close();
-      System.out.println("Time to read "+this.dataFile+" ("+gameCpt+" games) : "+(System.currentTimeMillis()-prevTime)+"ms");
     }catch(IOException e){
       e.printStackTrace();
     }

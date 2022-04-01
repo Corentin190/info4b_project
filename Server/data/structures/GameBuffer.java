@@ -52,7 +52,7 @@ public class GameBuffer{
       gameText = this.buffer.get(0);
       this.buffer.remove(0);
       notifyAll();
-    }else System.out.println("Reader done and buffer empty, job done !");
+    }
     return gameText;
   }
 }

@@ -3,7 +3,7 @@ package data.handling;
 import data.structures.*;
 import java.io.*;
 
-class InfoExtractor extends Thread{
+public class InfoExtractor extends Thread{
   private GameBuffer buffer;
   private CommonRessources ressources;
 
@@ -46,6 +46,9 @@ class InfoExtractor extends Thread{
           }
         }while(line!=null);
         ressources.incrGame();
+        ressources.extractPlayerData(tmp);
+        ressources.extractOpeningIteration(tmp);
+        ressources.extractUrl(tmp);
         gameText = buffer.pop();
       }
     }catch(IOException e){
