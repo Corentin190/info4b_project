@@ -2,14 +2,17 @@ package data.handling;
 
 import data.structures.*;
 import java.io.*;
+import java.util.*;
 
 public class PGNReader extends Thread{
   private String dataFile;
   private GameBuffer buffer;
+  private ArrayList<String> internalBuffer;
 
   public PGNReader(String dataFile, GameBuffer buffer){
     this.dataFile = dataFile;
     this.buffer = buffer;
+    this.internalBuffer = new ArrayList<String>();
   }
 
   public void run(){
@@ -21,23 +24,31 @@ public class PGNReader extends Thread{
       BufferedReader reader = new BufferedReader(new InputStreamReader(in),1024*16);
       int gameCpt = 0;
       long startReadTime = System.currentTimeMillis();
+      long bufferStartReadTime = startReadTime;
       while(reader.ready()){
-        String gameText = "";
-        String line;
-        int blankLineCpt = 0;
         do{
-          line = reader.readLine();
-          if(line != null){
-            gameText+=line;
-            gameText+="\n";
-            if(line.equals("")){
-              blankLineCpt++;
+          String gameText = "";
+          String line;
+          int blankLineCpt = 0;
+          do{
+            line = reader.readLine();
+            if(line != null){
+              gameText+=line;
+              gameText+="\n";
+              if(line.equals("")){
+                blankLineCpt++;
+              }
             }
-          }
-        }while(blankLineCpt<2);
-        gameCpt++;
-        buffer.add(gameText);
-        currentlyReadBytes+=gameText.getBytes().length;
+          }while(blankLineCpt<2);
+          gameCpt++;
+          currentlyReadBytes+=gameText.getBytes().length;
+          internalBuffer.add(gameText);
+        }while(gameCpt%10000>0 && reader.ready());
+        System.out.println("Time to fullfill internal buffer : "+(System.currentTimeMillis()-bufferStartReadTime)+"ms");
+        bufferStartReadTime = System.currentTimeMillis();
+        buffer.add(internalBuffer);
+        internalBuffer.clear();
+        //System.out.println("Dumping internal buffer into gameBuffer");
         if(System.currentTimeMillis()-startReadTime>1000){
           System.out.println(this.dataFile+" : ("+currentlyReadBytes+"/"+fileBytesSize+")"+"("+(currentlyReadBytes*100/fileBytesSize)+"%)("+(currentlyReadBytes-lastReadBytes)/(System.currentTimeMillis()-startReadTime)/1000+"MB/s)(Buffer health : "+buffer.getBufferHealth()+")");
           startReadTime = System.currentTimeMillis();

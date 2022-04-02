@@ -28,7 +28,7 @@ public class DBReader2{
       String dataFile = fileFolder.get(i);
       System.out.println("================= Processing "+dataFile+" =================");
       long prevTime = System.currentTimeMillis();
-      GameBuffer buffer = new GameBuffer(10000);
+      GameBuffer buffer = new GameBuffer(1000000);
       CommonRessources ressources = new CommonRessources(dataFile);
       PGNReader reader = new PGNReader(dataFile,buffer);
       InfoExtractor[] tab = new InfoExtractor[NB_THREAD];
