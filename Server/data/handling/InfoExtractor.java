@@ -90,7 +90,7 @@ public class InfoExtractor extends Thread{
         this.extractOpeningIteration(tmp);
         this.extractUrl(tmp);
         readTime = System.currentTimeMillis()-readGameStart;
-        if(readTime>1000)System.out.println(this.getName()+" took some time to read a game : "+readTime+"ms");
+        if(readTime>250)System.out.println(this.getName()+" took some time to read a game : "+readTime+"ms");
         readGameStart = System.currentTimeMillis();
         gameText = buffer.pop();
       }
