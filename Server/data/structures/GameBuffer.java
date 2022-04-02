@@ -62,6 +62,7 @@ public class GameBuffer{
     String gameText = null;
     if(this.buffer.size()>0 && readerDone && System.currentTimeMillis()-lastPopTime>1000){
       System.out.println("Still processing ...");
+      this.lastPopTime = System.currentTimeMillis();
     }
     if(this.buffer.size()>0){
       gameText = this.buffer.get(0);
