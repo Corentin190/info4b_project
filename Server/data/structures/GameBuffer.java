@@ -48,10 +48,14 @@ public class GameBuffer{
         e.printStackTrace();
       }
     }
+    System.out.println("Dumping "+(BUFFER_SIZE-this.buffer.size())+" elements");
+    int cpt = 0;
     while(this.buffer.size()<BUFFER_SIZE && gameTextList.size()>0){
-      buffer.add(gameTextList.get(0));
+      this.buffer.add(gameTextList.get(0));
       gameTextList.remove(0);
+      cpt++;
     }
+    System.out.println("Dumped "+cpt+" elements");
     this.notifyAll();
   }
 
