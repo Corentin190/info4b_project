@@ -44,6 +44,7 @@ public class PGNReader extends Thread{
           lastReadBytes = currentlyReadBytes;
         }
       }
+      System.out.println("Thread done");
       reader.close();
       in.close();
     }catch(IOException e){
