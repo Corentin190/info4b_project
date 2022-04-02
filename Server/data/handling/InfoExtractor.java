@@ -46,9 +46,9 @@ public class InfoExtractor extends Thread{
           }
         }while(line!=null);
         ressources.incrGame();
-        ressources.extractPlayerData(tmp);
-        ressources.extractOpeningIteration(tmp);
-        ressources.extractUrl(tmp);
+        //ressources.extractPlayerData(tmp);
+        //ressources.extractOpeningIteration(tmp);
+        //ressources.extractUrl(tmp);
         gameText = buffer.pop();
       }
     }catch(IOException e){
