@@ -2,6 +2,7 @@ package data.handling;
 
 import data.structures.*;
 import java.io.*;
+import java.util.*;
 
 public class InfoExtractor extends Thread{
   private GameBuffer buffer;
