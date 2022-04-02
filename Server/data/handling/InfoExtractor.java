@@ -92,7 +92,6 @@ public class InfoExtractor extends Thread{
         popAverageTime += System.currentTimeMillis()-popStartTime;
         popAverageTime = popAverageTime/2;
         popStartTime = System.currentTimeMillis();
-        System.out.println(this.getName()+" pop");
         gameText = buffer.pop();
       }
       System.out.println(this.getName()+" : Processing done ! Average process time per pop : "+popAverageTime+"ms");
