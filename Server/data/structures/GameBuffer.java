@@ -9,6 +9,7 @@ public class GameBuffer{
   public int bufferEmptyEvent;
   public int bufferFullEvent;
   private long lastPopTime;
+  private long popByteRate;
 
   public GameBuffer(final int BUFFER_SIZE){
     this.BUFFER_SIZE = BUFFER_SIZE;
@@ -17,6 +18,7 @@ public class GameBuffer{
     this.bufferEmptyEvent = 0;
     this.bufferFullEvent = 0;
     this.lastPopTime = System.currentTimeMillis();
+    this.popByteRate = 0;
   }
 
   public String getBufferHealth(){
@@ -60,13 +62,18 @@ public class GameBuffer{
       }
     }
     String gameText = null;
-    if(this.buffer.size()>0 && readerDone && System.currentTimeMillis()-lastPopTime>1000){
-      System.out.println("Still processing ...");
-      this.lastPopTime = System.currentTimeMillis();
-    }
     if(this.buffer.size()>0){
       gameText = this.buffer.get(0);
       this.buffer.remove(0);
+      this.popByteRate+=gameText.getBytes().length;
+    }
+    if(this.buffer.size()>0 && readerDone && System.currentTimeMillis()-lastPopTime>1000){
+      System.out.println("Still processing ... ("+popByteRate/1000000+"MB/s)");
+      this.lastPopTime = System.currentTimeMillis();
+      this.popByteRate = 0;
+    }else if(System.currentTimeMillis()-lastPopTime>1000){
+      this.lastPopTime = System.currentTimeMillis();
+      this.popByteRate = 0;
     }
     this.notifyAll();
     return gameText;
