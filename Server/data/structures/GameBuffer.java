@@ -39,27 +39,23 @@ public class GameBuffer{
   }
 
   public synchronized void add(ArrayList<String> gameTextList){
-    //System.out.println("Available buffer size : "+(BUFFER_SIZE-this.buffer.size()));
     int cpt = 0;
     while(this.buffer.size()<BUFFER_SIZE && gameTextList.size()>0){
       this.buffer.add(gameTextList.get(0));
       gameTextList.remove(0);
       cpt++;
     }
-    //System.out.println("Dumped "+cpt+" elements");
     this.notifyAll();
   }
 
   public synchronized String pop(){
     while(this.buffer.size()<=0 && !readerDone){
       this.bufferEmptyEvent++;
-      //System.out.println("Consumer thread blocked "+this.buffer.size());
       try{
         this.wait();
       }catch(InterruptedException e){
         e.printStackTrace();
       }
-      //System.out.println("Consumer thread unblocked "+this.buffer.size());
     }
     String gameText = null;
     if(this.buffer.size()>0){
