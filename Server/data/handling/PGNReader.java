@@ -31,8 +31,10 @@ public class PGNReader extends Thread{
           String gameText = "";
           String line;
           int blankLineCpt = 0;
+          gameText+="[Byte "+currentlyReadBytes+"]\n";
           do{
             line = reader.readLine();
+            currentlyReadBytes += (line.getBytes().length+1);
             if(line != null){
               gameText+=line;
               gameText+="\n";
@@ -42,7 +44,6 @@ public class PGNReader extends Thread{
             }
           }while(blankLineCpt<2);
           gameCpt++;
-          currentlyReadBytes+=gameText.getBytes().length;
           internalBuffer.add(gameText);
         }while(gameCpt%this.INTERNAL_BUFFER_DUMP_FREQUENCY>0 && reader.ready());
         buffer.add(internalBuffer);

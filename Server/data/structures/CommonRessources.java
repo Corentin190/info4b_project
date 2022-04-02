@@ -26,6 +26,38 @@ public class CommonRessources{
     this.gameNumber = 0;
   }
 
+  public synchronized void mergePlayerData(Hashtable<String,ArrayList<Long>> playersHashtable){
+    Enumeration keys = playersHashtable.keys();
+    while(keys.hasMoreElements()){
+      String key = (String)keys.nextElement();
+      if(this.playersHashtable.containsKey(key)) {
+        this.playersHashtable.get(key).addAll(playersHashtable.get(key));
+      }else{
+        this.playersHashtable.put(key,new ArrayList<Long>());
+        this.playersHashtable.get(key).addAll(playersHashtable.get(key));
+      }
+      Collections.sort(this.playersHashtable.get(key));
+    }
+  }
+  public synchronized void mergeOpeningData(Hashtable<String,Integer> openingHashtable){
+    Enumeration keys = openingHashtable.keys();
+    while(keys.hasMoreElements()){
+      String key = (String)keys.nextElement();
+      if(this.openingHashtable.containsKey(key)){
+        this.openingHashtable.put(key,this.openingHashtable.get(key)+openingHashtable.get(key));
+      }else{
+        this.openingHashtable.put(key,openingHashtable.get(key));
+      }
+    }
+  }
+  public synchronized void mergeUrlData(Hashtable<String,Long> urlHashtable){
+    Enumeration keys = urlHashtable.keys();
+    while(keys.hasMoreElements()){
+      String key = (String)keys.nextElement();
+      this.urlHashtable.put(key,urlHashtable.get(key));
+    }
+  }
+
   private void savePlayerData(){
     try{
       if(!this.outputPlayerData.exists())this.outputPlayerData.createNewFile();
