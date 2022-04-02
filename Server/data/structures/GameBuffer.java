@@ -40,18 +40,17 @@ public class GameBuffer{
   }
 
   public synchronized void add(ArrayList<String> gameTextList){
-    while(this.buffer.size()>=BUFFER_SIZE-gameTextList.size()){
-      //System.out.println("Buffer full");
+    while(this.buffer.size()>=BUFFER_SIZE){
       this.bufferFullEvent++;
       try{
         this.wait();
       }catch(InterruptedException e){
         e.printStackTrace();
       }
-      //System.out.println("Buffer has been empty, resuming ops");
     }
-    for(int i=0;i<gameTextList.size();i++){
-      buffer.add(gameTextList.get(i));
+    while(this.buffer.size()<BUFFER_SIZE && gameTextList.size()>0){
+      buffer.add(gameTextList.get(0));
+      gameTextList.remove(0);
     }
     this.notifyAll();
   }
@@ -59,13 +58,11 @@ public class GameBuffer{
   public synchronized String pop(){
     while(this.buffer.size()<=0 && !readerDone){
       this.bufferEmptyEvent++;
-      //System.out.println("Buffer empty");
       try{
         this.wait();
       }catch(InterruptedException e){
         e.printStackTrace();
       }
-      //System.out.println("Buffer has been fullfiled, resuming ops");
     }
     String gameText = null;
     if(this.buffer.size()>0){

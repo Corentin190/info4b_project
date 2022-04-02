@@ -21,10 +21,9 @@ public class PGNReader extends Thread{
       long currentlyReadBytes = 0;
       long lastReadBytes = 0;
       FileInputStream in = new FileInputStream("Src/"+this.dataFile);
-      BufferedReader reader = new BufferedReader(new InputStreamReader(in),1024*16);
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       int gameCpt = 0;
       long startReadTime = System.currentTimeMillis();
-      long bufferStartReadTime = startReadTime;
       while(reader.ready()){
         do{
           String gameText = "";
@@ -43,17 +42,16 @@ public class PGNReader extends Thread{
           gameCpt++;
           currentlyReadBytes+=gameText.getBytes().length;
           internalBuffer.add(gameText);
-        }while(gameCpt%10000>0 && reader.ready());
-        System.out.println("Time to fullfill internal buffer : "+(System.currentTimeMillis()-bufferStartReadTime)+"ms");
-        bufferStartReadTime = System.currentTimeMillis();
+        }while(internalBuffer.size()%10000>0 && reader.ready());
         buffer.add(internalBuffer);
-        internalBuffer.clear();
-        //System.out.println("Dumping internal buffer into gameBuffer");
         if(System.currentTimeMillis()-startReadTime>1000){
           System.out.println(this.dataFile+" : ("+currentlyReadBytes+"/"+fileBytesSize+")"+"("+(currentlyReadBytes*100/fileBytesSize)+"%)("+(currentlyReadBytes-lastReadBytes)/(System.currentTimeMillis()-startReadTime)/1000+"MB/s)(Buffer health : "+buffer.getBufferHealth()+")");
           startReadTime = System.currentTimeMillis();
           lastReadBytes = currentlyReadBytes;
         }
+      }
+      while(internalBuffer.size()>0){
+        buffer.add(internalBuffer);
       }
       System.out.println("Thread done");
       reader.close();
