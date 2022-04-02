@@ -6,7 +6,7 @@ import data.handling.*;
 public class DBReader2{
   public static void main(String[] args) {
     final int NB_THREAD;
-    final int BUFFER_SIZE = 100000;
+    final int BUFFER_SIZE = 1000000;
     if(args.length>0 && Integer.parseInt(args[0])>1){
       NB_THREAD = Integer.parseInt(args[0])-1;
     }else NB_THREAD = 1;
