@@ -49,6 +49,8 @@ public class InfoExtractor extends Thread{
 
   public void run(){
     try{
+      long readGameStart = System.currentTimeMillis();
+      long readTime = 0;
       String gameText = buffer.pop();
       while(gameText!=null){
         BufferedReader reader = new BufferedReader(new StringReader(gameText));
@@ -87,6 +89,9 @@ public class InfoExtractor extends Thread{
         this.extractPlayerData(tmp);
         this.extractOpeningIteration(tmp);
         this.extractUrl(tmp);
+        readTime = System.currentTimeMillis()-readGameStart;
+        if(readTime>1000)System.out.println(this.getName()+" took some time to read a game : "+readTime+"ms");
+        readGameStart = System.currentTimeMillis();
         gameText = buffer.pop();
       }
       ressources.mergePlayerData(this.playersHashtable);
