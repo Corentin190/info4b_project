@@ -40,14 +40,6 @@ public class GameBuffer{
   }
 
   public synchronized void add(ArrayList<String> gameTextList){
-    while(this.buffer.size()>=BUFFER_SIZE){
-      this.bufferFullEvent++;
-      try{
-        this.wait();
-      }catch(InterruptedException e){
-        e.printStackTrace();
-      }
-    }
     System.out.println("Available buffer size : "+(BUFFER_SIZE-this.buffer.size()));
     int cpt = 0;
     while(this.buffer.size()<BUFFER_SIZE && gameTextList.size()>0){
