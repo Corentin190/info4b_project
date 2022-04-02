@@ -49,9 +49,7 @@ public class InfoExtractor extends Thread{
 
   public void run(){
     try{
-      long popStartTime = System.currentTimeMillis();
       String gameText = buffer.pop();
-      long popAverageTime = System.currentTimeMillis()-popStartTime;
       while(gameText!=null){
         BufferedReader reader = new BufferedReader(new StringReader(gameText));
         String line = "";
@@ -89,18 +87,14 @@ public class InfoExtractor extends Thread{
         this.extractPlayerData(tmp);
         this.extractOpeningIteration(tmp);
         this.extractUrl(tmp);
-        popAverageTime += System.currentTimeMillis()-popStartTime;
-        popAverageTime = popAverageTime/2;
-        popStartTime = System.currentTimeMillis();
         gameText = buffer.pop();
       }
-      System.out.println(this.getName()+" : Processing done ! Average process time per pop : "+popAverageTime+"ms");
-      System.out.println(this.getName()+" : Merging my data to common ressources !");
-      long mergeStart = System.currentTimeMillis();
+      //System.out.println(this.getName()+" : Merging my data to common ressources !");
+      //long mergeStart = System.currentTimeMillis();
       ressources.mergePlayerData(this.playersHashtable);
       ressources.mergeOpeningData(this.openingHashtable);
       ressources.mergeUrlData(this.urlHashtable);
-      System.out.println(this.getName()+" : Merging done in "+(System.currentTimeMillis()-mergeStart)+"ms");
+      //System.out.println(this.getName()+" : Merging done in "+(System.currentTimeMillis()-mergeStart)+"ms");
     }catch(IOException e){
       e.printStackTrace();
     }
