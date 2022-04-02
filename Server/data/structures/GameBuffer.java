@@ -22,22 +22,28 @@ public class GameBuffer{
     this.bufferFullEvent = 0;
   }
 
-  public synchronized void setReaderDone(){
+  public void setReaderDone(){
     this.readerDone = true;
-    this.notifyAll();
+    synchronized(this){
+      this.notifyAll();
+    }
   }
 
   public synchronized void add(String gameText){
     try{
       while(this.buffer.size()>=BUFFER_SIZE){
         this.bufferFullEvent++;
-        this.wait();
+        synchronized(this){
+          this.wait();
+        }
       }
     }catch(InterruptedException e){
       e.printStackTrace();
     }
     buffer.add(gameText);
-    this.notifyAll();
+    synchronized(this){
+      this.notifyAll();
+    }
   }
 
   public synchronized String pop(){
