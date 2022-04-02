@@ -25,25 +25,34 @@ public class GameBuffer{
     this.readerDone = true;
   }
 
-  public void add(String gameText){
+  public synchronized void add(String gameText){
     while(this.buffer.size()>=BUFFER_SIZE){
       this.bufferFullEvent++;
-      System.out.println("Buffer full "+getBufferHealth());
+      try{
+        this.wait();
+      }catch(InterruptedException e){
+        e.printStackTrace();
+      }
     }
     buffer.add(gameText);
+    this.notifyAll();
   }
-  
+
   public synchronized String pop(){
-    System.out.println("Pop");
     while(this.buffer.size()<=0 && !readerDone){
       this.bufferEmptyEvent++;
-      System.out.println("Buffer empty");
+      try{
+        this.wait();
+      }catch(InterruptedException e){
+        e.printStackTrace();
+      }
     }
     String gameText = null;
     if(this.buffer.size()>0){
       gameText = this.buffer.get(0);
       this.buffer.remove(0);
     }
+    this.notifyAll();
     return gameText;
   }
 }
