@@ -48,7 +48,7 @@ public class GameBuffer{
         e.printStackTrace();
       }
     }
-    System.out.println("Dumping "+(BUFFER_SIZE-this.buffer.size())+" elements");
+    System.out.println("Available buffer size : "+(BUFFER_SIZE-this.buffer.size()));
     int cpt = 0;
     while(this.buffer.size()<BUFFER_SIZE && gameTextList.size()>0){
       this.buffer.add(gameTextList.get(0));
@@ -61,7 +61,6 @@ public class GameBuffer{
 
   public synchronized String pop(){
     while(this.buffer.size()<=0 && !readerDone){
-      System.out.println("Pop");
       this.bufferEmptyEvent++;
       System.out.println("Consumer thread blocked "+this.buffer.size());
       try{
