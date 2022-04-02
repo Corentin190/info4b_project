@@ -89,12 +89,9 @@ public class InfoExtractor extends Thread{
         this.extractUrl(tmp);
         gameText = buffer.pop();
       }
-      //System.out.println(this.getName()+" : Merging my data to common ressources !");
-      //long mergeStart = System.currentTimeMillis();
       ressources.mergePlayerData(this.playersHashtable);
       ressources.mergeOpeningData(this.openingHashtable);
       ressources.mergeUrlData(this.urlHashtable);
-      //System.out.println(this.getName()+" : Merging done in "+(System.currentTimeMillis()-mergeStart)+"ms");
     }catch(IOException e){
       e.printStackTrace();
     }
