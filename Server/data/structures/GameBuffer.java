@@ -21,9 +21,8 @@ public class GameBuffer{
     return this.buffer.size()+"/"+this.BUFFER_SIZE;
   }
 
-  public synchronized void setReaderDone(){
+  public void setReaderDone(){
     this.readerDone = true;
-    this.notifyAll();
   }
 
   public synchronized void add(String gameText){
