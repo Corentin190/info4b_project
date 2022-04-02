@@ -61,14 +61,15 @@ public class GameBuffer{
 
   public synchronized String pop(){
     while(this.buffer.size()<=0 && !readerDone){
+      System.out.println("Pop");
       this.bufferEmptyEvent++;
-      System.out.println("Consumer thread blocked");
+      System.out.println("Consumer thread blocked "+this.buffer.size());
       try{
         this.wait();
       }catch(InterruptedException e){
         e.printStackTrace();
       }
-      System.out.println("Consumer thread unblocked");
+      System.out.println("Consumer thread unblocked "+this.buffer.size());
     }
     String gameText = null;
     if(this.buffer.size()>0){
