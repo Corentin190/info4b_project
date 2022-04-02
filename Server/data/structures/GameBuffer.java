@@ -22,29 +22,29 @@ public class GameBuffer{
     this.bufferFullEvent = 0;
   }
 
-  public void setReaderDone(){
+  public synchronized void setReaderDone(){
     this.readerDone = true;
     this.notifyAll();
   }
 
-  public void add(String gameText){
+  public synchronized void add(String gameText){
     try{
       while(this.buffer.size()>=BUFFER_SIZE){
         this.bufferFullEvent++;
-        wait();
+        this.wait();
       }
     }catch(InterruptedException e){
       e.printStackTrace();
     }
     buffer.add(gameText);
-    notifyAll();
+    this.notifyAll();
   }
 
-  public String pop(){
+  public synchronized String pop(){
     try{
       while(this.buffer.size()<=0 && !readerDone){
         this.bufferEmptyEvent++;
-        wait();
+        this.wait();
       }
     }catch(InterruptedException e){
       e.printStackTrace();
@@ -53,7 +53,7 @@ public class GameBuffer{
     if(this.buffer.size()>0){
       gameText = this.buffer.get(0);
       this.buffer.remove(0);
-      notifyAll();
+      this.notifyAll();
     }
     return gameText;
   }

@@ -41,7 +41,9 @@ public class DBReader2{
       reader.start();
       try{
         reader.join();
-        buffer.setReaderDone();
+        synchronized(buffer){
+          buffer.setReaderDone();
+        }
         System.out.println("Time to read "+dataFile+" : "+(System.currentTimeMillis()-prevTime)+"ms");
         for(int j=0;j<tab.length;j++){
           tab[j].join();

@@ -36,7 +36,7 @@ public class PGNReader extends Thread{
           }
         }while(blankLineCpt<2);
         gameCpt++;
-        //buffer.add(gameText);
+        buffer.add(gameText);
         currentlyReadBytes+=gameText.getBytes().length;
         if(System.currentTimeMillis()-startReadTime>1000){
           System.out.println(this.dataFile+" : ("+currentlyReadBytes+"/"+fileBytesSize+")"+"("+(currentlyReadBytes*100/fileBytesSize)+"%)("+(currentlyReadBytes-lastReadBytes)/(System.currentTimeMillis()-startReadTime)/1000+"MB/s)");
