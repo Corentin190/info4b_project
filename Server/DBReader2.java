@@ -6,6 +6,7 @@ import data.handling.*;
 public class DBReader2{
   public static void main(String[] args) {
     final int NB_THREAD;
+    final int BUFFER_SIZE = 100000;
     if(args.length>0 && Integer.parseInt(args[0])>1){
       NB_THREAD = Integer.parseInt(args[0])-1;
     }else NB_THREAD = 1;
@@ -28,7 +29,7 @@ public class DBReader2{
       String dataFile = fileFolder.get(i);
       System.out.println("================= Processing "+dataFile+" =================");
       long prevTime = System.currentTimeMillis();
-      GameBuffer buffer = new GameBuffer(5000);
+      GameBuffer buffer = new GameBuffer(BUFFER_SIZE);
       CommonRessources ressources = new CommonRessources(dataFile);
       PGNReader reader = new PGNReader(dataFile,buffer);
       InfoExtractor[] tab = new InfoExtractor[NB_THREAD];
