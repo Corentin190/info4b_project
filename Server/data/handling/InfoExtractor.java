@@ -51,47 +51,50 @@ public class InfoExtractor extends Thread{
     try{
       long readGameStart = System.currentTimeMillis();
       long readTime = 0;
-      String gameText = buffer.pop();
-      while(gameText!=null){
-        BufferedReader reader = new BufferedReader(new StringReader(gameText));
-        String line = "";
-        Game tmp = new Game();
-        do{
-          line = reader.readLine();
-          if(line != null){
-            if(line.startsWith("[Byte")){
-              tmp.startingByte = Long.parseLong(line.substring(6,line.length()-1));
+      ArrayList<String> gameList = buffer.popMultiple(1000);
+      while(gameList.size()>0){
+        while(gameList.size()>0){
+          BufferedReader reader = new BufferedReader(new StringReader(gameList.get(0)));
+          String line = "";
+          Game tmp = new Game();
+          do{
+            line = reader.readLine();
+            if(line != null){
+              if(line.startsWith("[Byte")){
+                tmp.startingByte = Long.parseLong(line.substring(6,line.length()-1));
+              }
+              if(line.startsWith("[Event")){
+                tmp.type = line.substring(8,line.length()-2);
+              }
+              if(line.startsWith("[Site")){
+                tmp.url = line.substring(27,line.length()-2);
+              }
+              if(line.startsWith("[White ")){
+                tmp.whitePlayer = line.substring(8,line.length()-2);
+              }
+              if(line.startsWith("[Black ")){
+                tmp.blackPlayer = line.substring(8,line.length()-2);
+              }
+              if(line.startsWith("[Result")){
+                tmp.result = line.substring(9,line.length()-2);
+              }
+              if(line.startsWith("[UTCDate")){
+                tmp.result = line.substring(10,line.length()-2);
+              }
+              if(line.startsWith("[Opening")){
+                tmp.opening = line.substring(10,line.length()-2);
+              }
             }
-            if(line.startsWith("[Event")){
-              tmp.type = line.substring(8,line.length()-2);
-            }
-            if(line.startsWith("[Site")){
-              tmp.url = line.substring(27,line.length()-2);
-            }
-            if(line.startsWith("[White ")){
-              tmp.whitePlayer = line.substring(8,line.length()-2);
-            }
-            if(line.startsWith("[Black ")){
-              tmp.blackPlayer = line.substring(8,line.length()-2);
-            }
-            if(line.startsWith("[Result")){
-              tmp.result = line.substring(9,line.length()-2);
-            }
-            if(line.startsWith("[UTCDate")){
-              tmp.result = line.substring(10,line.length()-2);
-            }
-            if(line.startsWith("[Opening")){
-              tmp.opening = line.substring(10,line.length()-2);
-            }
-          }
-        }while(line!=null);
-        ressources.incrGame();
-        this.extractPlayerData(tmp);
-        this.extractOpeningIteration(tmp);
-        this.extractUrl(tmp);
-        readTime = System.currentTimeMillis()-readGameStart;
-        readGameStart = System.currentTimeMillis();
-        gameText = buffer.pop();
+          }while(line!=null);
+          ressources.incrGame();
+          this.extractPlayerData(tmp);
+          this.extractOpeningIteration(tmp);
+          this.extractUrl(tmp);
+          readTime = System.currentTimeMillis()-readGameStart;
+          readGameStart = System.currentTimeMillis();
+          gameList.remove(0);
+        }
+        gameList = buffer.popMultiple(1000);
       }
       ressources.mergePlayerData(this.playersHashtable);
       ressources.mergeOpeningData(this.openingHashtable);

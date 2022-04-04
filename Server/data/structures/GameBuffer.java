@@ -78,4 +78,37 @@ public class GameBuffer{
     this.notifyAll();
     return gameText;
   }
+
+  public synchronized ArrayList<String> popMultiple(int size){
+    while(this.buffer.size()<=0 && !readerDone){
+      this.bufferEmptyEvent++;
+      try{
+        this.wait();
+      }catch(InterruptedException e){
+        e.printStackTrace();
+      }
+    }
+    //System.out.println("Popping 1000 games");
+    ArrayList<String> res = new ArrayList<String>();
+    String gameText = null;
+    int cpt = 0;
+    while(this.buffer.size()>0 && cpt<size){
+      gameText = this.buffer.get(0);
+      this.buffer.remove(0);
+      this.popByteRate+=gameText.getBytes().length;
+      res.add(gameText);
+      cpt++;
+      gameText = null;
+    }
+    if(this.buffer.size()>0 && readerDone && System.currentTimeMillis()-lastPopTime>1000){
+      System.out.println("Still processing ... ("+popByteRate/1000000+"MB/s)");
+      this.lastPopTime = System.currentTimeMillis();
+      this.popByteRate = 0;
+    }else if(System.currentTimeMillis()-lastPopTime>1000){
+      this.lastPopTime = System.currentTimeMillis();
+      this.popByteRate = 0;
+    }
+    this.notifyAll();
+    return res;
+  }
 }
