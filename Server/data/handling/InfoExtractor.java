@@ -51,10 +51,10 @@ public class InfoExtractor extends Thread{
     try{
       long readGameStart = System.currentTimeMillis();
       long readTime = 0;
-      ArrayList<String> gameList = buffer.popMultiple(1000);
-      while(gameList.size()>0){
-        while(gameList.size()>0){
-          BufferedReader reader = new BufferedReader(new StringReader(gameList.get(0)));
+      ArrayList<String> internalBuffer = buffer.popMultiple(1000);
+      while(internalBuffer.size()>0){
+        while(internalBuffer.size()>0){
+          BufferedReader reader = new BufferedReader(new StringReader(internalBuffer.get(0)));
           String line = "";
           Game tmp = new Game();
           do{
@@ -92,9 +92,9 @@ public class InfoExtractor extends Thread{
           this.extractUrl(tmp);
           readTime = System.currentTimeMillis()-readGameStart;
           readGameStart = System.currentTimeMillis();
-          gameList.remove(0);
+          internalBuffer.remove(0);
         }
-        gameList = buffer.popMultiple(1000);
+        internalBuffer = buffer.popMultiple(1000);
       }
       ressources.mergePlayerData(this.playersHashtable);
       ressources.mergeOpeningData(this.openingHashtable);
