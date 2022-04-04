@@ -88,7 +88,6 @@ public class GameBuffer{
         e.printStackTrace();
       }
     }
-    //System.out.println("Popping 1000 games");
     ArrayList<String> res = new ArrayList<String>();
     String gameText = null;
     int cpt = 0;
