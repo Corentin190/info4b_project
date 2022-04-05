@@ -84,7 +84,7 @@ public class client {
           while(dataInputStream.readBoolean())
           System.out.println(dataInputStream.readUTF());
         }else if(scanner.equals("help")){
-          File file = new File("../help.txt");
+          File file = new File("help.txt");
           BufferedReader br = new BufferedReader(new FileReader(file));
           String st;
           while ((st = br.readLine()) != null)
