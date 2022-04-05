@@ -44,6 +44,7 @@ public class InfoExtractor extends Thread{
   }
 
   public synchronized void extractUrl(Game game) {
+    if(this.urlHashtable.containsKey(game.url))System.out.println(game.toString()));
     this.urlHashtable.put(game.url,game.startingByte);
   }
 
