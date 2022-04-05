@@ -57,10 +57,10 @@ public class InfoExtractor extends Thread{
           BufferedReader reader = new BufferedReader(new StringReader(internalBuffer.get(0)));
           String line = "";
           Game tmp = new Game();
-          boolean sameGame;
+          boolean sameGame=false;
           do{
             line = reader.readLine();
-            sameGame = false;
+            
             if(line != null){
               if(line.startsWith("[Byte")){
                 tmp.startingByte = Long.parseLong(line.substring(6,line.length()-1));
@@ -90,6 +90,7 @@ public class InfoExtractor extends Thread{
             }
           }while(line!=null);
           if(sameGame)System.out.println(tmp.toString());
+          sameGame = false;
           ressources.incrGame();
           this.extractPlayerData(tmp);
           this.extractOpeningIteration(tmp);
