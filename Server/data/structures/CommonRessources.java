@@ -54,7 +54,6 @@ public class CommonRessources{
     Enumeration keys = urlHashtable.keys();
     while(keys.hasMoreElements()){
       String key = (String)keys.nextElement();
-      if(this.urlHashtable.containsKey(key))System.out.println(key+" found in 2 Hashtables when trying to merge them together");
       this.urlHashtable.put(key,urlHashtable.get(key));
     }
   }
