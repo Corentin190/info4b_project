@@ -60,7 +60,7 @@ public class InfoExtractor extends Thread{
           boolean sameGame=false;
           do{
             line = reader.readLine();
-            
+
             if(line != null){
               if(line.startsWith("[Byte")){
                 tmp.startingByte = Long.parseLong(line.substring(6,line.length()-1));
@@ -70,7 +70,6 @@ public class InfoExtractor extends Thread{
               }
               if(line.startsWith("[Site")){
                 tmp.url = line.substring(27,line.length()-2);
-                if(tmp.url.equals("7z8imaio") || tmp.url.equals("Qgud81z6") || tmp.url.equals("yKLsmHay") || tmp.url.equals("IVICoDVv") || tmp.url.equals("ldtRV9jz"))sameGame = true;
               }
               if(line.startsWith("[White ")){
                 tmp.whitePlayer = line.substring(8,line.length()-2);
