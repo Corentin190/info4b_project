@@ -9,8 +9,12 @@ public class client {
       DataInputStream dataInputStream;
       OutputStream outputStream;
       DataOutputStream dataOutputStream;
-
-      String ip="127.0.0.1";
+      String ip="";
+      if(args.length!=0) {
+        ip=args[0];
+      }else {
+        ip="127.0.0.1";
+      }
       int port = 1085;
       System.out.println("Connecting to "+ip+":"+port);
       if(args.length>0){
