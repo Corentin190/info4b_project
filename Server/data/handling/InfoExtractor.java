@@ -58,8 +58,10 @@ public class InfoExtractor extends Thread{
           BufferedReader reader = new BufferedReader(new StringReader(internalBuffer.get(0)));
           String line = "";
           Game tmp = new Game();
+          boolean sameGame;
           do{
             line = reader.readLine();
+            sameGame = false;
             if(line != null){
               if(line.startsWith("[Byte")){
                 tmp.startingByte = Long.parseLong(line.substring(6,line.length()-1));
@@ -69,6 +71,7 @@ public class InfoExtractor extends Thread{
               }
               if(line.startsWith("[Site")){
                 tmp.url = line.substring(27,line.length()-2);
+                if(tmp.url.equals("7z8imaio") || tmp.url.equals("Qgud81z6") || tmp.url.equals("yKLsmHay") || tmp.url.equals("IVICoDVv") || tmp.url.equals("ldtRV9jz"))sameGame = true;
               }
               if(line.startsWith("[White ")){
                 tmp.whitePlayer = line.substring(8,line.length()-2);
@@ -80,13 +83,14 @@ public class InfoExtractor extends Thread{
                 tmp.result = line.substring(9,line.length()-2);
               }
               if(line.startsWith("[UTCDate")){
-                tmp.result = line.substring(10,line.length()-2);
+                tmp.date = line.substring(10,line.length()-2);
               }
               if(line.startsWith("[Opening")){
                 tmp.opening = line.substring(10,line.length()-2);
               }
             }
           }while(line!=null);
+          if(sameGame)System.out.println(tmp.toString());
           ressources.incrGame();
           this.extractPlayerData(tmp);
           this.extractOpeningIteration(tmp);
