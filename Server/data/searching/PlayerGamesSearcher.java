@@ -2,7 +2,7 @@ package data.searching;
 
 import java.io.*;
 import java.util.*;
-import data.structures.Game;
+import data.structures.*;
 
 public class PlayerGamesSearcher{
   private String playerName;
