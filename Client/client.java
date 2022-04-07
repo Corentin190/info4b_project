@@ -79,7 +79,7 @@ public class client {
           dataOutputStream.writeUTF(scanner);
           while(dataInputStream.readBoolean())
           System.out.println(dataInputStream.readUTF());
-          System.out.println(System.currentTimeMillis()-startTime);
+          System.out.println("Done in "+System.currentTimeMillis()-startTime+"ms");
         }else if(scanner.startsWith("active")){
           long startTime = System.currentTimeMillis();
           clientSocket.connect(new InetSocketAddress(ip,port));
@@ -90,7 +90,7 @@ public class client {
           dataOutputStream.writeUTF(scanner);
           while(dataInputStream.readBoolean())
           System.out.println(dataInputStream.readUTF());
-          System.out.println(System.currentTimeMillis()-startTime);
+          System.out.println("Done in "+System.currentTimeMillis()-startTime+"ms");
         }else if(scanner.equals("help")){
           File file = new File("help.txt");
           BufferedReader br = new BufferedReader(new FileReader(file));
