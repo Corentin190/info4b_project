@@ -8,12 +8,14 @@ public class GamesSearcherByDate{
 	public String date;
 	public String month;
 	public String year;
+	public String day;
 
 	public GamesSearcherByDate(String date){
 	//format YYYY.MM.DD
 		this.date = date;
 		this.month = date.substring(5,date.length()-3);
 		this.year = date.substring(0,date.length()-6);
+		this.day = date.substring(8,date.length());
 	}
 
 	public boolean doesExists() {
@@ -44,16 +46,40 @@ public class GamesSearcherByDate{
 		try{
 			FileInputStream in = new FileInputStream("Src/"+file);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
 			do{
 				System.out.println("je recherche une partie");
 				Game tmp;
 				int blankLineCpt = 0;
+				String lineContent="";
+
+				if(Integer.parseInt(this.day)>1){
+					System.out.println("je suis dans le if");
+					int dayLower = Integer.parseInt(this.day)-1;
+					String dayLowerString="";
+					if(dayLower<10){
+						dayLowerString = "0"+dayLower;
+					}else{
+						dayLowerString = dayLower+"";
+					}
+					String modifiedDate = this.year+"."+this.month+"."+dayLowerString;
+					String lineToCompare="[UTCDate \""+modifiedDate+"\"]";
+					Boolean quit = false;
+					do{
+						lineContent = reader.readLine();
+					}while(!lineContent.equals(lineToCompare));
+					do{
+						if(reader.readLine().equals("")) quit=true;
+					}while(!quit);
+					reader.readLine();
+			//		System.out.println("je suis dehors le if");
+					this.day=0+"";
+					System.out.println("end of if");
+				}
 				tmp = new Game();
 				do{
-					
-					
-					String lineContent = reader.readLine();
+
+					lineContent = reader.readLine();
+
 		        //System.out.println(lineContent);
 					if(lineContent != null){
 						if(lineContent.startsWith("[Event")){
@@ -83,22 +109,22 @@ public class GamesSearcherByDate{
 					}
 
 					if(blankLineCpt>1){
-						if(tmp.date.equals(this.date) && cptGame<nbGame){
-						  	gameArray.add(tmp);
-						  	System.out.println(tmp.toString());
-						  	cptGame++;
-						  }
+						if(tmp.date.equals(this.date)){
+							gameArray.add(tmp);
+							//System.out.println(tmp.toString());
+							cptGame++;
+						}
 					}
 				}while(blankLineCpt < 2);
-				//gameArray.add(tmp);
-		      //System.out.println(tmp.date);
+				gameArray.add(tmp);
+		      	System.out.println(tmp.date);
 
-			}while(reader.ready());
+			}while(reader.ready() && cptGame<nbGame);
 			for(int i=0;i<gameArray.size();i++){
 				System.out.println(gameArray.get(i).toString());
 			}
 
-		     
+
 
     // for(int i=0;i<games.length && cptGame<nbGame;i++){
     // 	 if(!(games[i].date.equals(this.date))){
