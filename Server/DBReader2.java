@@ -72,7 +72,14 @@ public class DBReader2{
         e.printStackTrace();
       }
     }
-     //Creation of an arraylist wich contains all the data files '*_player_data.dat', in alphabetic order.
+    /*
+    This part creates a file called 'playersData.dat' that contains the name of all players with their number of game.
+    They are sorted from the most active to the less.
+    The most active who is the one with the higher count of game.
+    */
+    /*
+    Creation of an arraylist wich contains all the data files '*_player_data.dat', in alphabetic order.
+    */
     File folder = new File("Src/");
     ArrayList<String> fileFolder = new ArrayList<>();
     for(int i=0;i<folder.list().length;i++){
