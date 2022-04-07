@@ -1,12 +1,42 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
-
 /*
 Client part of the client/server program.
 */
 
 public class client {
+  public static class DateFormatException extends Exception{
+      DateFormatException(){
+    }
+  }
+  public static void checkDate(String date) throws DateFormatException{
+    if(date.length()!=10){
+      throw new DateFormatException();
+    } else if(!(date.substring(4,date.length()-5)).equals(".") && !(date.substring(7,date.length()-2)).equals(".")){
+      throw new DateFormatException();
+    }else if(Integer.parseInt(date.substring(5,date.length()-3))<1 || Integer.parseInt(date.substring(5,date.length()-3))>12){
+      throw new DateFormatException();
+    }else if(Integer.parseInt(date.substring(8,date.length()))<1 || Integer.parseInt(date.substring(8,date.length()))>31){
+      throw new DateFormatException();
+    }
+    switch(Integer.parseInt(date.substring(5,date.length()-3))){
+    default: if(Integer.parseInt(date.substring(8,date.length()))<0)throw new DateFormatException();break;
+    case 1: if(Integer.parseInt(date.substring(8,date.length()))>31)throw new DateFormatException();break;
+    case 2: if(Integer.parseInt(date.substring(8,date.length()))>28)throw new DateFormatException();break;
+    case 3: if(Integer.parseInt(date.substring(8,date.length()))>31)throw new DateFormatException();break;
+    case 4: if(Integer.parseInt(date.substring(8,date.length()))>30)throw new DateFormatException();break;
+    case 5: if(Integer.parseInt(date.substring(8,date.length()))>31)throw new DateFormatException();break;
+    case 6: if(Integer.parseInt(date.substring(8,date.length()))>30)throw new DateFormatException();break;
+    case 7: if(Integer.parseInt(date.substring(8,date.length()))>31)throw new DateFormatException();break;
+    case 8: if(Integer.parseInt(date.substring(8,date.length()))>31)throw new DateFormatException();break;
+    case 9: if(Integer.parseInt(date.substring(8,date.length()))>30)throw new DateFormatException();break;
+    case 10: if(Integer.parseInt(date.substring(8,date.length()))>31)throw new DateFormatException();break;
+    case 11: if(Integer.parseInt(date.substring(8,date.length()))>30)throw new DateFormatException();break;
+    case 12: if(Integer.parseInt(date.substring(8,date.length()))>31)throw new DateFormatException();
+    }
+  }
+
   public static void main(String args[]) {
     try{
       InputStream inputStream;
@@ -51,40 +81,83 @@ public class client {
           dataInputStream = new DataInputStream(inputStream);
           outputStream = clientSocket.getOutputStream();
           dataOutputStream = new DataOutputStream(outputStream);
-          dataOutputStream.writeUTF(scanner);
-          long startTime = System.currentTimeMillis();
-          System.out.println("Searching for "+scanner.substring(7,scanner.length()));
-          String in = "";
-          int gamesFound = 0;
-          boolean transmissionOver = false;
-          int nb = Integer.parseInt(dataInputStream.readUTF());
-          System.out.println(nb+" games found for "+scanner.substring(7,scanner.length())+" in "+(System.currentTimeMillis()-startTime)+"ms");
-          if(nb>0){
-            System.out.println("Do you want to see those games ? (Y/N)");
-            if(sc.nextLine().toLowerCase().equals("y")){
-              dataOutputStream.writeUTF("show");
-              int input = 0;
-              boolean error;
+          if(scanner.endsWith("date")) {
+            dataOutputStream.writeUTF(scanner);
+            if(dataInputStream.readUTF().equals("which?")){
+              String answer="";
+              Boolean error;
               do{
                 error = false;
-                System.out.println("How many ?");
+                System.out.println("What date ?");
                 try{
-                  input = Integer.parseInt(sc.nextLine());
-                  if(input>nb || input<0)error = true;
-                }catch(NumberFormatException e){
-                  error = true;
+                  answer = sc.nextLine();
+                  checkDate(answer);
+                }catch(DateFormatException e){
+                  error=true;
                 }
-                if(error)System.out.println("Invalid number, please try a valid number between 0 and "+nb);
+                if(error) System.out.println("Invalid format, please enter a valid one (YYYY.MM.DD)");
               }while(error);
-              dataOutputStream.writeUTF(input+"");
-              startTime = System.currentTimeMillis();
-              do{
-                in = dataInputStream.readUTF();
-                if(!in.equals("fin"))System.out.println(in);
-              }while(!in.equals("fin"));
-              System.out.println("Result found in "+(System.currentTimeMillis()-startTime)+"ms");
+              dataOutputStream.writeUTF(answer);
+              if(dataInputStream.readBoolean()){
+                int input=0;
+                do{
+                  error = false;
+                  System.out.println("How many ?");
+                  try{
+                    input = Integer.parseInt(sc.nextLine());
+                    if(input<0)error = true;
+                  }catch(NumberFormatException e){
+                    error = true;
+                  }
+                  if(error)System.out.println("Invalid number, please try a valid number");
+                }while(error);
+                dataOutputStream.writeUTF(input+"");
+                long startTime = System.currentTimeMillis();
+                String in = "";
+                do{
+                  in = dataInputStream.readUTF();
+                  if(!in.equals("fin"))System.out.println(in);
+                }while(!in.equals("fin"));
+                System.out.println("Result found in "+(System.currentTimeMillis()-startTime)+"ms");
+              }
+            }
+          }else{
+             dataOutputStream.writeUTF(scanner);
+            long startTime = System.currentTimeMillis();
+            System.out.println("Searching for "+scanner.substring(7,scanner.length()));
+            
+            boolean transmissionOver = false;
+            int nb = Integer.parseInt(dataInputStream.readUTF());
+            System.out.println(nb+" games found for "+scanner.substring(7,scanner.length())+" in "+(System.currentTimeMillis()-startTime)+"ms");
+            if(nb>0){
+              System.out.println("Do you want to see those games ? (Y/N)");
+              if(sc.nextLine().toLowerCase().equals("y")){
+                dataOutputStream.writeUTF("show");
+                int input = 0;
+                Boolean error;
+                do{
+                  error = false;
+                  System.out.println("How many ?");
+                  try{
+                    input = Integer.parseInt(sc.nextLine());
+                    if(input>nb || input<0)error = true;
+                  }catch(NumberFormatException e){
+                    error = true;
+                  }
+                  if(error)System.out.println("Invalid number, please try a valid number between 0 and "+nb);
+                }while(error);
+                dataOutputStream.writeUTF(input+"");
+                startTime = System.currentTimeMillis();
+                String in;
+                do{
+                  in = dataInputStream.readUTF();
+                  if(!in.equals("fin"))System.out.println(in);
+                }while(!in.equals("fin"));
+                System.out.println("Result found in "+(System.currentTimeMillis()-startTime)+"ms");
+              }
             }
           }
+         
           /*
           if 'opening', display the most <parameter> openings
           */

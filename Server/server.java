@@ -64,6 +64,41 @@ class clientConnexion extends Thread{
     }
   }
 
+  private void searchByDate(String date){
+    GamesSearcherByDate searcher = new GamesSearcherByDate(date);
+    Boolean exists = searcher.doesExists();
+    try{
+      OutputStream outputStream = clientSocket.getOutputStream();
+      DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+      InputStream inputStream = clientSocket.getInputStream();
+      DataInputStream dataInputStream = new DataInputStream(inputStream);
+      dataOutputStream.writeBoolean(exists);
+      if(exists){
+        System.out.println("exists");
+        int nbGame = Integer.parseInt(dataInputStream.readUTF());
+        Game[] playerGames = searcher.dateLoad(nbGame);
+        for(int i=0;i<nbGame;i++){
+          String result = "";
+          result += ("============== Game "+(i+1)+" ==============\n");
+          result += ("Type : "+playerGames[playerGames.length-i-1].type+"\n");
+          result += ("URL : https://lichess.org/"+playerGames[playerGames.length-i-1].url+"\n");
+          result += ("White : "+playerGames[playerGames.length-i-1].whitePlayer+"\n");
+          result += ("Black : "+playerGames[playerGames.length-i-1].blackPlayer+"\n");
+          result += ("Result : "+playerGames[playerGames.length-i-1].result+"\n");
+          result += ("Date : "+playerGames[playerGames.length-i-1].date+"\n");
+          result += ("Opening : "+playerGames[playerGames.length-i-1].opening+"\n");
+          result += ("\n");
+          dataOutputStream.writeUTF(result);
+        }
+      dataOutputStream.writeUTF("fin");
+      }else{
+        System.out.println("Do not exists");
+      }
+    }catch(IOException e){
+      e.printStackTrace();
+    }
+  }
+
   private void opening(int quantity){
     TopOpeningSearcher searcher = new TopOpeningSearcher(quantity);
     try{
@@ -107,7 +142,15 @@ class clientConnexion extends Thread{
       DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
       String received = dataInputStream.readUTF();
       if(received.startsWith("search")) {
-        searchNumber(received.substring(7,received.length()));
+        if(received.endsWith("date")){
+          dataOutputStream.writeUTF("which?");
+          String dateToFind=dataInputStream.readUTF();
+          System.out.println(dateToFind);
+          searchByDate(dateToFind);
+        }else{
+          searchNumber(received.substring(7,received.length()));
+        }
+        
       }
       else if(received.startsWith("opening"))opening(Integer.parseInt(received.substring(8,received.length())));
       else if(received.startsWith("active"))active(Integer.parseInt(received.substring(7,received.length())));
