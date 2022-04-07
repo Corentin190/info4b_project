@@ -8,13 +8,17 @@ public class PGNReader extends Thread{
   private String dataFile;
   private GameBuffer buffer;
   private ArrayList<String> internalBuffer;
-  private int INTERNAL_BUFFER_DUMP_FREQUENCY;
+  private int INTERNAL_BUFFER_FLUSH_FREQUENCY;
 
   public PGNReader(String dataFile, GameBuffer buffer){
     this.dataFile = dataFile;
     this.buffer = buffer;
+    /*
+    Creating an internal buffer in order to limit synchronized access to the buffer.
+    Smaller INTERNAL_BUFFER_FLUSH_FREQUENCY should result in slightly less RAM usage but will increase the frequency of synchronized access to the buffer wich slows the reading speed.
+    */
     this.internalBuffer = new ArrayList<String>();
-    this.INTERNAL_BUFFER_DUMP_FREQUENCY = 10000;
+    this.INTERNAL_BUFFER_FLUSH_FREQUENCY = 10000;
   }
 
   public void run(){
@@ -26,6 +30,12 @@ public class PGNReader extends Thread{
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       int gameCpt = 0;
       long startReadTime = System.currentTimeMillis();
+      /*
+      Start reading the .pgn file passed as constructor args.
+      Each games seems to end with a blank line followed by the list of moves then followed by a second blank line.
+      We just have to count for 2 blank lines and we know a game has been completely read.
+      The program then add it to it's internalBuffer. Each time the internalBuffer meets it's INTERNAL_BUFFER_FLUSH_FREQUENCY, it sends it's buffer to the buffer.
+      */
       while(reader.ready()){
         do{
           String gameText = "";
@@ -45,14 +55,21 @@ public class PGNReader extends Thread{
           }while(blankLineCpt<2);
           gameCpt++;
           internalBuffer.add(gameText);
-        }while(gameCpt%this.INTERNAL_BUFFER_DUMP_FREQUENCY>0 && reader.ready());
+        }while(gameCpt%this.INTERNAL_BUFFER_FLUSH_FREQUENCY>0 && reader.ready());
         buffer.add(internalBuffer);
+        /*
+        The following code is just for debugging purposes !
+        It prints where the reader is in the .pgn file, it's average reading speed and the buffer's health once a second.
+        */
         if(System.currentTimeMillis()-startReadTime>1000){
           System.out.println(this.dataFile+" : ("+currentlyReadBytes+"/"+fileBytesSize+")"+"("+(currentlyReadBytes*100/fileBytesSize)+"%)("+(currentlyReadBytes-lastReadBytes)/(System.currentTimeMillis()-startReadTime)/1000+"MB/s)(Buffer health : "+buffer.getBufferHealth()+")");
           startReadTime = System.currentTimeMillis();
           lastReadBytes = currentlyReadBytes;
         }
       }
+      /*
+      Once the reader is done reading it's .pgn file, it flushes it's internalBuffer to the buffer.
+      */
       while(internalBuffer.size()>0){
         buffer.add(internalBuffer);
       }
