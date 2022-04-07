@@ -43,7 +43,7 @@ public class PlayersSearcher{
         }while(reader.ready());
         System.out.println(dataFile+" done.");
       }
-      File outputPlayer = new File("playersData.dat");
+      File outputPlayer = new File("Src/playersData.dat");
       ArrayList<Map.Entry<String, Integer>> l = new ArrayList(players.entrySet());
       Collections.sort(l, new Comparator<Map.Entry<String, Integer>>(){
         public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2){

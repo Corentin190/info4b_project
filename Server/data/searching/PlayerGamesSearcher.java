@@ -15,7 +15,7 @@ public class PlayerGamesSearcher{
 public int loadNumber(){
       int playerNbGame=0;
       try{
-        FileInputStream in = new FileInputStream("data/searching/playersData.dat");
+        FileInputStream in = new FileInputStream("Src/playersData.dat");
           BufferedReader reader = new BufferedReader(new InputStreamReader(in));
           String line="";
           do{
