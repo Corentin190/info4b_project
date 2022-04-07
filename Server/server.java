@@ -115,10 +115,7 @@ class clientConnexion extends Thread{
       clientSocket.close();
       clients.remove(this);
     }catch(IOException e){
-      //e.printStackTrace();
-      System.out.println("Closed connexion with"+clientSocket.getInetAddress());
-      clientSocket.close();
-      clients.remove(this);
+      e.printStackTrace();
     }
   }
 }
