@@ -108,7 +108,6 @@ public class InfoExtractor extends Thread{
           this.extractPlayerData(tmp);
           this.extractOpeningIteration(tmp);
           this.extractUrl(tmp);
-          readGameStart = System.currentTimeMillis();
           internalBuffer.remove(0);
         }
         internalBuffer = buffer.popMultiple(this.BUFFER_POP_AMOUNT);
