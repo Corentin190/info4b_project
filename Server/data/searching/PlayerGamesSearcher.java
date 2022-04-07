@@ -12,24 +12,31 @@ public class PlayerGamesSearcher{
     this.playerName = playerName;
     this.playerGames = new ArrayList<Game>();
   }
-public int loadNumber(){
-      int playerNbGame=0;
-      try{
-        FileInputStream in = new FileInputStream("Src/playersData.dat");
-          BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-          String line="";
-          do{
-            line = reader.readLine();
-            if(line.equals("[Pseudo \""+this.playerName+"\"]")){
-              line=reader.readLine();
-              playerNbGame = Integer.parseInt(line.substring(14,line.length()-1));
-            }
-          }while(reader.ready());
-      }catch(IOException e){
-        e.printStackTrace();
-      }
-        return playerNbGame;
+  /*
+  This function return an int variable that contains the number of game of a spefific player.
+  The number of games is taken from the file 'playersData.dat', that contains every players with thier number of games.
+  */
+  public int loadNumber(){
+    int playerNbGame=0;
+    try{
+      FileInputStream in = new FileInputStream("Src/playersData.dat");
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+      String line="";
+      do{
+        /*
+        If the current line equals [Pseudo "<player>"], then the number of games is following
+        */
+        line = reader.readLine();
+        if(line.equals("[Pseudo \""+this.playerName+"\"]")){
+          line=reader.readLine();
+          playerNbGame = Integer.parseInt(line.substring(14,line.length()-1));
+        }
+      }while(reader.ready());
+    }catch(IOException e){
+      e.printStackTrace();
     }
+    return playerNbGame;
+  }
 
   public Game[] load(){
     return load(0,loadNumber());

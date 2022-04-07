@@ -2,6 +2,10 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+/*
+Client part of the client/server program.
+*/
+
 public class client {
   public static void main(String args[]) {
     try{
@@ -21,14 +25,26 @@ public class client {
         ip = args[0];
       }
 
-      System.out.println("Welcome !\n-------\nIf you are looking for all the game of a player, tap 'search <nickname>'.\nFor example : search 2girls1cup\n-------\nIf you want to quit, tap 'exit'");
+      System.out.println("Welcome !\n-------\nEnter 'help' to get some help.\n-------\nIf you want to quit, tap 'exit'");
       String scanner="";
       while(true){
+        /*
+        Setting up the socket in order to etablish the connextion to the server.
+        */
         Socket clientSocket = new Socket();
         System.out.println("Enter a command");
         Scanner sc = new Scanner(System.in);
         scanner = sc.nextLine();
+        /*
+        Check what the client wants, then execute this or that command.
+        */
+        /*
+        if 'exit', close the client
+        */
         if(scanner.startsWith("exit"))break;
+        /*
+        if 'search', search the number of games or the specified player, then display or not those games
+        */
         else if(scanner.startsWith("search ")){
           clientSocket.connect(new InetSocketAddress(ip,port));
           inputStream = clientSocket.getInputStream();
@@ -69,6 +85,9 @@ public class client {
               System.out.println("Result found in "+(System.currentTimeMillis()-startTime)+"ms");
             }
           }
+          /*
+          if 'opening', display the most <parameter> openings
+          */
         }else if(scanner.startsWith("opening")){
           long startTime = System.currentTimeMillis();
           clientSocket.connect(new InetSocketAddress(ip,port));
@@ -77,9 +96,13 @@ public class client {
           outputStream = clientSocket.getOutputStream();
           dataOutputStream = new DataOutputStream(outputStream);
           dataOutputStream.writeUTF(scanner);
-          while(dataInputStream.readBoolean())
-          System.out.println(dataInputStream.readUTF());
+          while(dataInputStream.readBoolean()){
+            System.out.println(dataInputStream.readUTF());
+          }
           System.out.println("Done in "+(System.currentTimeMillis()-startTime)+"ms");
+          /*
+          if 'active', diaplay the most <parameter> most active players
+          */
         }else if(scanner.startsWith("active")){
           long startTime = System.currentTimeMillis();
           clientSocket.connect(new InetSocketAddress(ip,port));
@@ -88,15 +111,23 @@ public class client {
           outputStream = clientSocket.getOutputStream();
           dataOutputStream = new DataOutputStream(outputStream);
           dataOutputStream.writeUTF(scanner);
-          while(dataInputStream.readBoolean())
-          System.out.println(dataInputStream.readUTF());
+          while(dataInputStream.readBoolean()){
+            System.out.println(dataInputStream.readUTF());
+          }
           System.out.println("Done in "+(System.currentTimeMillis()-startTime)+"ms");
+          /*
+          if 'help', open the file named 'help.txt', to show wich command use
+          */
         }else if(scanner.equals("help")){
           File file = new File("help.txt");
           BufferedReader br = new BufferedReader(new FileReader(file));
-          String st;
-          while ((st = br.readLine()) != null)
+          String st="";
+          while ((st = br.readLine()) != null){
               System.out.println(st);
+          }
+          /*
+          if a non-repertoried command as been enter, print 'Wrong command, type help to show help guide'
+          */
         }else{
           System.out.println("Wrong command, type help to show help guide");
         }
