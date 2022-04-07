@@ -91,7 +91,7 @@ class clientConnexion extends Thread{
       searcher.load();
       for(int i=0;i<searcher.mostActivePlayers.length;i++){
         dataOutputStream.writeBoolean(true);
-        dataOutputStream.writeUTF((i+1)+". "+searcher.mostActivePlayers[i]+" - "+searcher.playersGamesList.get(searcher.mostActivePlayers[i]));
+        dataOutputStream.writeUTF((i+1)+". "+searcher.mostActivePlayers[i]);
       }
       dataOutputStream.writeBoolean(false);
     }catch(IOException e){
