@@ -115,7 +115,7 @@ class clientConnexion extends Thread{
       clientSocket.close();
       clients.remove(this);
     }catch(IOException e){
-      clientSocket.close();
+      e.printStackTrace();
     }
   }
 }
