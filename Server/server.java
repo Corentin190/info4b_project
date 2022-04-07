@@ -89,9 +89,9 @@ class clientConnexion extends Thread{
       InputStream inputStream = clientSocket.getInputStream();
       DataInputStream dataInputStream = new DataInputStream(inputStream);
       searcher.load();
-      for(int i=0;i<searcher.mostActivePlayers.length;i++){
+      for(int i=0;i<searcher.mostActivePlayers.size();i++){
         dataOutputStream.writeBoolean(true);
-        dataOutputStream.writeUTF((i+1)+". "+searcher.mostActivePlayers[i]);
+        dataOutputStream.writeUTF(searcher.mostActivePlayers.get(i));
       }
       dataOutputStream.writeBoolean(false);
     }catch(IOException e){
