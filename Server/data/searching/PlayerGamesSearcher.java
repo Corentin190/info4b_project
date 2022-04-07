@@ -12,46 +12,24 @@ public class PlayerGamesSearcher{
     this.playerName = playerName;
     this.playerGames = new ArrayList<Game>();
   }
-
-  public int loadNumber(){
-    int nbGames=0;
-    try{
-      File folder = new File("Src/");
-      ArrayList<String> fileFolder = new ArrayList<>();
-      for(int i=0;i<folder.list().length;i++){
-        fileFolder.add(folder.list()[i]);
-      }
-      fileFolder.sort(String::compareToIgnoreCase);
-      for(int i=0;i<fileFolder.size();i++){
-        int previousNbGames = nbGames;
-        if(fileFolder.get(i).endsWith("_player_data.dat")){
-          FileInputStream in = new FileInputStream("Src/"+fileFolder.get(i));
+public int loadNumber(){
+      int playerNbGame=0;
+      try{
+        FileInputStream in = new FileInputStream("data/searching/playersData.dat");
           BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-          String line = "";
-          Boolean found=false;
-          while(reader.ready() && found==false){
+          String line="";
+          do{
             line = reader.readLine();
             if(line.equals("[Pseudo \""+this.playerName+"\"]")){
-              found=true;
+              line=reader.readLine();
+              playerNbGame = Integer.parseInt(line.substring(14,line.length()-1));
             }
-            if(found){
-              line = reader.readLine();
-              line = reader.readLine();
-              if(line.startsWith("[NumberOfGame")){
-                nbGames = nbGames + Integer.parseInt(line.substring(14,line.length()-1));
-              }
-            }
-          }
-          System.out.println((nbGames-previousNbGames)+" games found in "+fileFolder.get(i));
-          reader.close();
-          in.close();
-        }
+          }while(reader.ready());
+      }catch(IOException e){
+        e.printStackTrace();
       }
-    }catch(IOException e) {
-      e.printStackTrace();
+        return playerNbGame;
     }
-    return nbGames;
-  }
 
   public Game[] load(){
     return load(0,loadNumber());
@@ -73,9 +51,10 @@ public class PlayerGamesSearcher{
       Hashtable<String,ArrayList<Long>> playerDataHashtable = new Hashtable<String,ArrayList<Long>>();
       boolean isOver = false;
       int fileIndex = 0;
+      int cptGame = 0;
       System.out.println("Hashtable building ...");
       long startTime = System.currentTimeMillis();
-      while(fileIndex<fileFolder.size() && !isOver){
+      while(fileIndex<fileFolder.size() && cptGame<(toGame-fromGame) && !isOver){
         boolean found = false;
         FileInputStream in = new FileInputStream("Src/"+fileFolder.get(fileIndex));
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -87,6 +66,7 @@ public class PlayerGamesSearcher{
           StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
           while(tokenizer.hasMoreTokens()){
             startingBytes.add(Long.parseLong(tokenizer.nextToken()));
+            cptGame++;
           }
           playerDataHashtable.put(fileFolder.get(fileIndex),startingBytes);
         }

@@ -23,15 +23,17 @@ class clientConnexion extends Thread{
       int nbGamesFound = 0;
       Game[] playerGames = searcher.load(nbGames);
       for(int i=0;i<nbGames;i++){
-        dataOutputStream.writeUTF("============== Game "+(i+1)+" ==============");
-        dataOutputStream.writeUTF("Type : "+playerGames[playerGames.length-i-1].type);
-        dataOutputStream.writeUTF("URL : "+playerGames[playerGames.length-i-1].url);
-        dataOutputStream.writeUTF("White : "+playerGames[playerGames.length-i-1].whitePlayer);
-        dataOutputStream.writeUTF("Black : "+playerGames[playerGames.length-i-1].blackPlayer);
-        dataOutputStream.writeUTF("Result : "+playerGames[playerGames.length-i-1].result);
-        dataOutputStream.writeUTF("Date : "+playerGames[playerGames.length-i-1].date);
-        dataOutputStream.writeUTF("Opening : "+playerGames[playerGames.length-i-1].opening);
-        dataOutputStream.writeUTF("\n");
+        String result = "";
+        result += ("============== Game "+(i+1)+" ==============\n");
+        result += ("Type : "+playerGames[playerGames.length-i-1].type+"\n");
+        result += ("URL : https://lichess.org/"+playerGames[playerGames.length-i-1].url+"\n");
+        result += ("White : "+playerGames[playerGames.length-i-1].whitePlayer+"\n");
+        result += ("Black : "+playerGames[playerGames.length-i-1].blackPlayer+"\n");
+        result += ("Result : "+playerGames[playerGames.length-i-1].result+"\n");
+        result += ("Date : "+playerGames[playerGames.length-i-1].date+"\n");
+        result += ("Opening : "+playerGames[playerGames.length-i-1].opening+"\n");
+        result += ("\n");
+        dataOutputStream.writeUTF(result);
       }
       dataOutputStream.writeUTF("fin");
     }catch(IOException e){
