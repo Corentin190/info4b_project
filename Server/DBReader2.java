@@ -80,14 +80,13 @@ public class DBReader2{
     /*
     Creation of an arraylist wich contains all the data files '*_player_data.dat', in alphabetic order.
     */
-    File folder = new File("Src/");
-    ArrayList<String> fileFolder = new ArrayList<>();
+    ArrayList<String> dataFileFolder = new ArrayList<>();
     for(int i=0;i<folder.list().length;i++){
       if(folder.list()[i].endsWith("_player_data.dat")){
-        fileFolder.add(folder.list()[i]);
+        dataFileFolder.add(folder.list()[i]);
       }
     }
-    fileFolder.sort(String::compareToIgnoreCase);
+    dataFileFolder.sort(String::compareToIgnoreCase);
     try{
       Hashtable<String,Integer> players = new Hashtable<String, Integer>();
       String dataFile="";
@@ -96,8 +95,8 @@ public class DBReader2{
       String player="";
       String line="";
       int nbGame;
-      for(int i=0;i<fileFolder.size();i++){
-        dataFile = fileFolder.get(i);
+      for(int i=0;i<dataFileFolder.size();i++){
+        dataFile = dataFileFolder.get(i);
         System.out.println("Dealing with "+dataFile+"...");
         in = new FileInputStream("Src/"+dataFile);
         reader = new BufferedReader(new InputStreamReader(in));
