@@ -41,10 +41,8 @@ public class client {
           String in = "";
           int gamesFound = 0;
           boolean transmissionOver = false;
-
-
           int nb = Integer.parseInt(dataInputStream.readUTF());
-          System.out.println(nb+" games found for "+scanner.substring(7,scanner.length()));
+          System.out.println(nb+" games found for "+scanner.substring(7,scanner.length())+" in "+(System.currentTimeMillis()-startTime)+"ms");
           if(nb>0){
             System.out.println("Do you want to see those games ? (Y/N)");
             if(sc.nextLine().toLowerCase().equals("y")){
@@ -63,10 +61,12 @@ public class client {
                 if(error)System.out.println("Invalid number, please try a valid number between 0 and "+nb);
               }while(error);
               dataOutputStream.writeUTF(input+"");
+              startTime = System.currentTimeMillis();
               do{
                 in = dataInputStream.readUTF();
                 if(!in.equals("fin"))System.out.println(in);
               }while(!in.equals("fin"));
+              System.out.println("Result found in "+(System.currentTimeMillis()-startTime)+"ms");
             }
           }
         }else if(scanner.startsWith("opening")){
