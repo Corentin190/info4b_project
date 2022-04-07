@@ -70,6 +70,7 @@ public class client {
             }
           }
         }else if(scanner.startsWith("opening")){
+          long startTime = System.currentTimeMillis();
           clientSocket.connect(new InetSocketAddress(ip,port));
           inputStream = clientSocket.getInputStream();
           dataInputStream = new DataInputStream(inputStream);
@@ -78,7 +79,9 @@ public class client {
           dataOutputStream.writeUTF(scanner);
           while(dataInputStream.readBoolean())
           System.out.println(dataInputStream.readUTF());
+          System.out.println(System.currentTimeMillis()-startTime);
         }else if(scanner.startsWith("active")){
+          long startTime = System.currentTimeMillis();
           clientSocket.connect(new InetSocketAddress(ip,port));
           inputStream = clientSocket.getInputStream();
           dataInputStream = new DataInputStream(inputStream);
@@ -87,6 +90,7 @@ public class client {
           dataOutputStream.writeUTF(scanner);
           while(dataInputStream.readBoolean())
           System.out.println(dataInputStream.readUTF());
+          System.out.println(System.currentTimeMillis()-startTime);
         }else if(scanner.equals("help")){
           File file = new File("help.txt");
           BufferedReader br = new BufferedReader(new FileReader(file));
