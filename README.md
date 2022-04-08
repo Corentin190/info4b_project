@@ -1,23 +1,23 @@
 # Info4B Project
 
-How to read a pgn file :
+## Client
 
-K : king
-Q : queen
-R : rook
-B : bishop
-N : knight (or S)
-  : pawn
+### Quick start
 
-x : capture (or :)
+1. Launch the client with `java client <serverIP>` and replace `<serverIP>` with your server public IP.
+2. Type `help` to prompt the list of commands you can use in the client.
+3. Type `exit` to quit.
 
-\# : end of the game (Checkmate : the king is in check and there is no possible escape : the opponent wins)
+## Server
 
-Score : 1-0 (white wins)
-0-1 (black wins)
+### Quick start
 
-ex : gxh6 : pawn from g column takes h6
+1. Place all your .pgn files in Src/
+2. Launch DBReader2 with `java DBReader2 <nbThread>` and replace `<nbThread>` with the number of cores your CPU has.
+3. Wait for DBReader2 to finish. For each .pgn file in Src/ you should have 3 .dat files created.
+4. You're all done, you can now start the server with `java server`.
+5. The server shoud start and prompt "Server listenning on port 1085".
 
-The player with the white pieces always moves first.
+### Disclaimer
 
-ex : 1. e4 e6 —> first moves : white pawn moves to e4 and black pawn moves to e6
+Don't start the server without first running DBReader2 ! The server can't work without the .dat files !
