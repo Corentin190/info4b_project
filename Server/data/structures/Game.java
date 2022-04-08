@@ -14,7 +14,11 @@ public class Game{
   public ArrayList<String> moves;
   public int line;
   public long startingByte;
-
+  /*
+  This static function is very helpful to create multiple instances of Game at once like when you want to read every games of a specific player over a certain amount of time.
+  The fact that it creates multiple games from a single file and an array of long representing the starting bytes of the game inside the file,
+  we can greatly reduce reading time by creating only one input stream and reading all games by skipping from one to the other in a snap.
+  */
   public static Game[] createFromFile(String file, long[] startingBytes){
     Game[] games = new Game[startingBytes.length];
     try {
@@ -52,6 +56,11 @@ public class Game{
             if(lineContent.equals("")){
               blankLineCpt++;
             }
+            //Partie a check, experimentale
+            if(blankLineCpt == 1){
+              StringTokenizer token = new StringTokenizer();
+              while(token.hasMoreElements())games[i].moves.add(token.nextElement());
+            }
           }
         }while(blankLineCpt < 2);
       }
@@ -65,7 +74,9 @@ public class Game{
   public Game(){
     moves = new ArrayList<String>();
   }
-
+  /*
+  Create an instance of Game by reading it from a specific File and a specific position in the file represented by the startingByte arg.
+  */
   public Game(String file, long startingByte){
     this.startingByte = startingByte;
     moves = new ArrayList<String>();

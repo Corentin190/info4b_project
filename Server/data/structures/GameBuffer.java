@@ -12,6 +12,9 @@ public class GameBuffer{
   private long popByteRate;
 
   public GameBuffer(final int BUFFER_SIZE){
+  	/*
+    Smaller BUFFER_SIZE should result in slightly less RAM usage but may cause some slowdowns if the consumer threads are slow.
+    */
     this.BUFFER_SIZE = BUFFER_SIZE;
     this.buffer = new ArrayList<String>();
     this.readerDone = false;
@@ -28,7 +31,9 @@ public class GameBuffer{
   public void setReaderDone(){
     this.readerDone = true;
   }
-
+  /*
+	Add a single game to the buffer. If the buffer is already full, the producer Thread will wait until notified.
+  */
   public synchronized void add(String gameText){
     while(this.buffer.size()>=BUFFER_SIZE){
       this.bufferFullEvent++;
@@ -41,7 +46,10 @@ public class GameBuffer{
     buffer.add(gameText);
     this.notifyAll();
   }
-
+  /*
+  Try to add every game contained in the ArrayList. If the Game can't be added to the buffer because it's full, then do nothing.
+  Very usefull to limit synchronized access to the buffer and greatly increase exchange speed between the producer and the consumer threads.
+  */
   public synchronized void add(ArrayList<String> gameTextList){
     int cpt = 0;
     while(this.buffer.size()<BUFFER_SIZE && gameTextList.size()>0){
@@ -51,7 +59,9 @@ public class GameBuffer{
     }
     this.notifyAll();
   }
-
+  /*
+	Pop a single game to the buffer. If the buffer is already empty, the consumer Thread will wait until notified.
+  */
   public synchronized String pop(){
     while(this.buffer.size()<=0 && !readerDone){
       this.bufferEmptyEvent++;
@@ -78,7 +88,10 @@ public class GameBuffer{
     this.notifyAll();
     return gameText;
   }
-
+  /*
+  Try to pop a specified amount of games contained in the buffer. If the Game can't be pop from the buffer because it's empty, then it returns an empty ArrayList.
+  Very usefull to limit synchronized access to the buffer and greatly increase exchange speed between the producer and the consumer threads.
+  */
   public synchronized ArrayList<String> popMultiple(int size){
     while(this.buffer.size()<=0 && !readerDone){
       this.bufferEmptyEvent++;

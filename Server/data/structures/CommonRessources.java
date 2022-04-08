@@ -7,8 +7,11 @@ public class CommonRessources{
   private File outputPlayerData;
   private File outputOpeningData;
   private File outputUrlIndex;
-  public int gameNumber;
-
+  public int gameNumber;    //indicates how many games have been read in the file once each Thread have merge their data.
+  /*
+  Creating the 3 Hashtables that's going to contain the merging of all InfoExtractors internal Hashtables.
+  Thoses 3 Hashtables will then be used to create the 3 files used for browsing the DB in a blink of an eye.
+  */
   public Hashtable<String,Integer> openingHashtable;
   public Hashtable<String,ArrayList<Long>> playersHashtable;
   public Hashtable<String,Long> urlHashtable;
@@ -25,7 +28,10 @@ public class CommonRessources{
     this.urlHashtable = new Hashtable<String,Long>();
     this.gameNumber = 0;
   }
-
+  /*
+  This function will merge the data contained in the playersHashtable arg inside the shared playersHashtable.
+  If a player already exists in the shared Hashtable, his games are added to his previous games and the list of his games is sorted.
+  */
   public synchronized void mergePlayerData(Hashtable<String,ArrayList<Long>> playersHashtable){
     Enumeration keys = playersHashtable.keys();
     while(keys.hasMoreElements()){
@@ -39,6 +45,10 @@ public class CommonRessources{
       Collections.sort(this.playersHashtable.get(key));
     }
   }
+  /*
+  This function will merge the data contained in the openingHashtable arg inside the shared openingHashtable.
+  If an opening already exists in the shared Hashtable, the number of iterations is simply added to the previous number.
+  */
   public synchronized void mergeOpeningData(Hashtable<String,Integer> openingHashtable){
     Enumeration keys = openingHashtable.keys();
     while(keys.hasMoreElements()){
@@ -50,6 +60,12 @@ public class CommonRessources{
       }
     }
   }
+  /*
+  This function will merge the data contained in the urlHashtable arg inside the shared urlHashtable.
+  There's no point to do anything if an url already exists because every game has a unique url therefore 2 games shouldn't share the same key.
+  The only exception is encountered 5 times over 3 099 534 127 games. 5 of them appear twice in the database. This means that they are the same game so there's no point in doing anything.
+  The real number of games is 3 099 534 122.
+  */
   public synchronized void mergeUrlData(Hashtable<String,Long> urlHashtable){
     Enumeration keys = urlHashtable.keys();
     while(keys.hasMoreElements()){
@@ -57,7 +73,10 @@ public class CommonRessources{
       this.urlHashtable.put(key,urlHashtable.get(key));
     }
   }
-
+  /*
+  This function will save the data contained in the shared playersHashtable to a file named like this :
+  lichess_standard_rated_AAAA_MM_player_data.dat
+  */
   private void savePlayerData(){
     try{
       if(!this.outputPlayerData.exists())this.outputPlayerData.createNewFile();
@@ -79,7 +98,10 @@ public class CommonRessources{
       e.printStackTrace();
     }
   }
-
+  /*
+  This function will save the data contained in the openingHashtable to a file named like this :
+  lichess_standard_rated_AAAA_MM_opening_data.dat
+  */
   private void saveOpeningData(){
     try{
       if(!this.outputOpeningData.exists())this.outputOpeningData.createNewFile();
@@ -97,7 +119,10 @@ public class CommonRessources{
       e.printStackTrace();
     }
   }
-
+  /*
+  This function will save the data contained in the urlHashtable to a file named like this :
+  lichess_standard_rated_AAAA_MM_url_index.dat
+  */
   private void saveUrlIndex(){
     try{
       if(!this.outputUrlIndex.exists())this.outputUrlIndex.createNewFile();
@@ -114,7 +139,7 @@ public class CommonRessources{
       e.printStackTrace();
     }
   }
-
+  
   public void saveData(){
     System.out.println("Saving data as "+outputPlayerData.getName());
     savePlayerData();
