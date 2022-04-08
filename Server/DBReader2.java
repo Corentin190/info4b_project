@@ -3,8 +3,6 @@ import java.io.*;
 import data.structures.*;
 import data.handling.*;
 
-//coucou
-
 public class DBReader2{
   public static void main(String[] args) {
     /*
