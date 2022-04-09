@@ -53,13 +53,13 @@ public class Game{
             if(lineContent.startsWith("[Opening")){
               games[i].opening = lineContent.substring(10,lineContent.length()-2);
             }
-            if(lineContent.equals("")){
-              blankLineCpt++;
-            }
             //Partie a check, experimentale
             if(blankLineCpt == 1){
-              StringTokenizer token = new StringTokenizer();
-              while(token.hasMoreElements())games[i].moves.add(token.nextElement());
+              StringTokenizer token = new StringTokenizer(lineContent);
+              while(token.hasMoreElements())games[i].moves.add((String)token.nextElement());
+            }
+            if(lineContent.equals("")){
+              blankLineCpt++;
             }
           }
         }while(blankLineCpt < 2);
